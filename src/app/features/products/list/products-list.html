@@ -1,0 +1,45 @@
+<div class="mb-6 flex items-center justify-between gap-4">
+  <h1 class="text-2xl font-bold text-slate-900">Sản phẩm</h1>
+
+  <input
+    type="search"
+    placeholder="Tìm sản phẩm..."
+    [(ngModel)]="search"
+    (keyup.enter)="onSearch()"
+    class="w-64 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+  />
+</div>
+
+@if (loading()) {
+  <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+    @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+      <div class="h-56 animate-pulse rounded-xl bg-slate-100"></div>
+    }
+  </div>
+} @else if (products().length === 0) {
+  <p class="text-sm text-slate-500">Không tìm thấy sản phẩm nào.</p>
+} @else {
+  <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+    @for (product of products(); track product.id) {
+      <app-product-card [product]="product" (addToCart)="onAddToCart($event)" />
+    }
+  </div>
+
+  @if (total() > limit) {
+    <div class="mt-6 flex justify-center gap-2">
+      @for (p of [1, 2, 3, 4, 5]; track p) {
+        @if ((p - 1) * limit < total()) {
+          <button
+            type="button"
+            (click)="goToPage(p)"
+            [class.bg-indigo-600]="page() === p"
+            [class.text-white]="page() === p"
+            class="h-9 w-9 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100"
+          >
+            {{ p }}
+          </button>
+        }
+      }
+    </div>
+  }
+}

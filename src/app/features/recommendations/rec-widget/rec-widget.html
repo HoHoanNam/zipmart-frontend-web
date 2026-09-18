@@ -1,0 +1,23 @@
+<section class="mt-10">
+  <h2 class="mb-4 text-lg font-semibold text-slate-900">Gợi ý cho bạn</h2>
+
+  @if (loading()) {
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div class="h-56 animate-pulse rounded-xl bg-slate-100"></div>
+      }
+    </div>
+  } @else if (recommendations().length === 0) {
+    <p class="text-sm text-slate-500">Chưa có sản phẩm để gợi ý.</p>
+  } @else {
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+      @for (product of recommendations(); track product.id) {
+        <app-product-card
+          [product]="product"
+          [badge]="coldStart() ? 'Bán chạy' : 'Gợi ý cho bạn'"
+          (addToCart)="onAddToCart($event)"
+        />
+      }
+    </div>
+  }
+</section>

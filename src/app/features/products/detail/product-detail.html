@@ -1,0 +1,45 @@
+@if (loading()) {
+  <div class="h-96 animate-pulse rounded-xl bg-slate-100"></div>
+} @else if (product()) {
+  <div class="grid gap-8 md:grid-cols-2">
+    <div class="flex h-80 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+      <span class="text-4xl">{{ product()!.name.charAt(0).toUpperCase() }}</span>
+    </div>
+
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900">{{ product()!.name }}</h1>
+      <p class="mt-2 text-2xl font-semibold text-indigo-600">{{ product()!.price | vndCurrency }}</p>
+      <p class="mt-1 text-sm text-slate-500">
+        {{ product()!.stock > 0 ? 'Còn ' + product()!.stock + ' sản phẩm' : 'Hết hàng' }}
+      </p>
+
+      <div class="mt-6 flex items-center gap-3">
+        <input
+          type="number"
+          min="1"
+          [max]="product()!.stock"
+          [value]="quantity()"
+          (change)="quantity.set(+($any($event.target).value))"
+          class="w-20 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+        />
+        <button
+          type="button"
+          [disabled]="product()!.stock === 0"
+          (click)="onAddToCart()"
+          class="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+        >
+          Thêm vào giỏ
+        </button>
+        @if (justAdded()) {
+          <span class="text-sm text-green-600">Đã thêm vào giỏ!</span>
+        }
+      </div>
+    </div>
+  </div>
+
+  @if (authService.isAuthenticated()) {
+    <app-rec-widget />
+  }
+} @else {
+  <p class="text-sm text-slate-500">Không tìm thấy sản phẩm.</p>
+}

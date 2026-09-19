@@ -1,21 +1,29 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CartService } from '../../../features/cart/cart.service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink],
+  imports: [RouterLink, FormsModule],
   templateUrl: './navbar.html',
 })
 export class Navbar {
+  private readonly router = inject(Router);
   readonly authService = inject(AuthService);
   readonly cartService = inject(CartService);
+
+  search = '';
 
   constructor() {
     if (this.authService.isAuthenticated()) {
       void this.cartService.load();
     }
+  }
+
+  onSearch(): void {
+    void this.router.navigate(['/products'], { queryParams: { q: this.search || null } });
   }
 
   logout(): void {

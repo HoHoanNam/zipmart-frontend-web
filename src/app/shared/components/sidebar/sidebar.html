@@ -1,0 +1,100 @@
+<aside
+  class="sticky top-20 hidden h-[calc(100vh-96px)] w-65 flex-col gap-space-lg overflow-y-auto lg:flex"
+>
+  <section>
+    <div class="mb-space-xs flex items-center justify-between">
+      <span class="text-caption-bold uppercase tracking-wider text-neutral-600"> Danh mục </span>
+      <span class="rounded-badge bg-neutral-100 px-1.5 py-0.5 text-caption text-neutral-600">
+        Sắp ra mắt
+      </span>
+    </div>
+    <div class="space-y-1">
+      @for (category of staticCategories; track category) {
+        <div
+          class="flex items-center gap-space-sm rounded-control px-3 py-2 text-body-medium text-neutral-600"
+        >
+          <span class="material-symbols-outlined text-[20px] text-neutral-300">category</span>
+          <span>{{ category }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <hr class="border-neutral-100" />
+
+  <section>
+    <div class="mb-space-xs flex items-center justify-between">
+      <span class="text-caption-bold uppercase tracking-wider text-neutral-600">
+        Bán chạy nhất
+      </span>
+      <span class="rounded-badge bg-neutral-100 px-1.5 py-0.5 text-caption text-neutral-600">
+        Sắp ra mắt
+      </span>
+    </div>
+    <div class="space-y-1">
+      @for (item of staticBestSellers; track item) {
+        <div class="flex items-center gap-space-sm rounded-control px-2 py-2 text-neutral-600">
+          <span
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-neutral-50 text-neutral-300"
+          >
+            <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+          </span>
+          <p class="line-clamp-2 text-caption leading-tight">{{ item }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  @if (authService.isAuthenticated()) {
+    <hr class="border-neutral-100" />
+
+    <section>
+      <span class="mb-space-xs block text-caption-bold uppercase tracking-wider text-neutral-600">
+        Lịch sử đơn hàng
+      </span>
+      @if (recentOrders().length === 0) {
+        <p class="text-caption text-neutral-600">Chưa có đơn hàng nào.</p>
+      } @else {
+        <div class="space-y-space-xs">
+          @for (order of recentOrders(); track order.id) {
+            <a routerLink="/orders" class="block rounded-control p-2 hover:bg-neutral-50">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="text-caption-bold text-brand">#{{ order.id.slice(0, 8) }}</span>
+                <span class="text-caption text-neutral-600">
+                  {{ order.total | vndCurrency }}
+                </span>
+              </div>
+              <span
+                class="mt-1 inline-block rounded-badge bg-neutral-100 px-1.5 py-0.5 text-[10px] font-semibold text-neutral-600"
+              >
+                {{ statusLabel(order.status) }}
+              </span>
+            </a>
+          }
+        </div>
+      }
+    </section>
+
+    @if (topRecommendation(); as rec) {
+      <hr class="border-neutral-100" />
+
+      <section>
+        <span class="mb-space-xs block text-caption-bold uppercase tracking-wider text-neutral-600">
+          Gợi ý cho bạn
+        </span>
+        <a
+          [routerLink]="['/products', rec.productId]"
+          class="block rounded-card border border-neutral-100 bg-neutral-50 p-2.5"
+        >
+          <div class="mb-1 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[14px] text-brand">auto_awesome</span>
+            <span class="text-[10px] font-semibold uppercase text-brand">
+              Độ phù hợp {{ rec.score * 100 | number: '1.0-0' }}%
+            </span>
+          </div>
+          <p class="line-clamp-2 text-caption text-neutral-900">{{ rec.product.name }}</p>
+        </a>
+      </section>
+    }
+  }
+</aside>

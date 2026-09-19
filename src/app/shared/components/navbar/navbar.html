@@ -1,35 +1,70 @@
-<header class="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur">
-  <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-    <a routerLink="/" class="text-xl font-bold text-indigo-600">zipmart</a>
+<header class="sticky top-0 z-20 h-16 border-b border-neutral-100 bg-white/95 backdrop-blur">
+  <div class="mx-auto flex h-full max-w-7xl items-center justify-between gap-space-md px-4 sm:px-6 lg:px-8">
+    <a routerLink="/" class="shrink-0 text-headline-3 font-semibold text-neutral-900">
+      zip<span class="text-brand">mart</span>
+    </a>
 
-    <div class="flex items-center gap-6 text-sm font-medium text-slate-600">
-      <a routerLink="/" class="hover:text-indigo-600">Trang chủ</a>
-      <a routerLink="/products" class="hover:text-indigo-600">Sản phẩm</a>
+    <div class="mx-space-md hidden max-w-120 flex-1 md:block">
+      <div class="relative flex items-center">
+        <span
+          class="material-symbols-outlined pointer-events-none absolute left-3 text-[20px] text-neutral-600"
+          >search</span
+        >
+        <input
+          type="search"
+          name="search"
+          placeholder="Tìm kiếm sản phẩm..."
+          [(ngModel)]="search"
+          (keyup.enter)="onSearch()"
+          class="h-11 w-full rounded-control border border-neutral-300 bg-white pl-10 pr-3 text-body-regular text-neutral-900 placeholder:text-neutral-600 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15"
+        />
+      </div>
+    </div>
 
-      @if (authService.isAuthenticated()) {
-        <a routerLink="/orders" class="hover:text-indigo-600">Đơn hàng</a>
-      }
-
-      <a routerLink="/cart" class="relative hover:text-indigo-600">
-        Giỏ hàng
+    <div class="flex items-center gap-space-sm">
+      <a
+        routerLink="/cart"
+        class="relative flex items-center gap-space-xs rounded-control bg-brand px-3 py-2 text-white transition-colors hover:bg-brand-dark"
+      >
+        <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+        <span class="hidden text-body-medium sm:inline">Giỏ hàng</span>
         @if (cartService.itemCount() > 0) {
-          <span class="absolute -right-3 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-600 px-1 text-xs text-white">
+          <span
+            class="ml-1 rounded-full bg-white px-1.5 py-0.5 text-caption-bold text-brand"
+          >
             {{ cartService.itemCount() }}
           </span>
         }
       </a>
 
       @if (authService.isAuthenticated()) {
-        <button type="button" (click)="logout()" class="hover:text-indigo-600">Đăng xuất</button>
+        <a
+          routerLink="/orders"
+          class="hidden rounded-control px-3 py-2 text-body-medium text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 sm:inline-block"
+        >
+          Đơn hàng
+        </a>
+        <button
+          type="button"
+          (click)="logout()"
+          class="rounded-control px-3 py-2 text-body-medium text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900"
+        >
+          Đăng xuất
+        </button>
       } @else {
-        <a routerLink="/login" class="hover:text-indigo-600">Đăng nhập</a>
+        <a
+          routerLink="/login"
+          class="rounded-control px-3 py-2 text-body-medium text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900"
+        >
+          Đăng nhập
+        </a>
         <a
           routerLink="/register"
-          class="rounded-lg bg-indigo-600 px-3 py-1.5 text-white hover:bg-indigo-700"
+          class="rounded-control bg-neutral-100 px-3 py-2 text-body-medium text-neutral-900 hover:bg-neutral-300/60"
         >
           Đăng ký
         </a>
       }
     </div>
-  </nav>
+  </div>
 </header>

@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { CartService } from '../../cart/cart.service';
 import { BehaviorTrackingService } from '../../../core/tracking/behavior-tracking.service';
 import type { Product } from '../../../core/models/product.model';
@@ -15,6 +16,7 @@ export class ProductsList {
   private readonly productsService = inject(ProductsService);
   private readonly cartService = inject(CartService);
   private readonly tracking = inject(BehaviorTrackingService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly products = signal<Product[]>([]);
   readonly total = signal(0);
@@ -24,6 +26,7 @@ export class ProductsList {
   search = '';
 
   constructor() {
+    this.search = this.route.snapshot.queryParamMap.get('q') ?? '';
     void this.load();
   }
 

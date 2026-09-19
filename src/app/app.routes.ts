@@ -4,41 +4,56 @@ import { authGuard } from './core/auth/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./features/home/home').then((m) => m.Home),
-  },
-  {
-    path: 'login',
-    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
-  },
-  {
-    path: 'register',
-    loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
-  },
-  {
-    path: 'products',
     loadComponent: () =>
-      import('./features/products/list/products-list').then((m) => m.ProductsList),
+      import('./layout/shell-with-sidebar/shell-with-sidebar').then((m) => m.ShellWithSidebar),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/home/home').then((m) => m.Home),
+      },
+      {
+        path: 'products',
+        loadComponent: () =>
+          import('./features/products/list/products-list').then((m) => m.ProductsList),
+      },
+    ],
   },
   {
-    path: 'products/:id',
+    path: '',
     loadComponent: () =>
-      import('./features/products/detail/product-detail').then((m) => m.ProductDetail),
-  },
-  {
-    path: 'cart',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/cart/cart-page').then((m) => m.CartPage),
-  },
-  {
-    path: 'checkout',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/orders/checkout/checkout').then((m) => m.Checkout),
-  },
-  {
-    path: 'orders',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/orders/history/order-history').then((m) => m.OrderHistory),
+      import('./layout/shell-simple/shell-simple').then((m) => m.ShellSimple),
+    children: [
+      {
+        path: 'login',
+        loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+      },
+      {
+        path: 'register',
+        loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
+      },
+      {
+        path: 'products/:id',
+        loadComponent: () =>
+          import('./features/products/detail/product-detail').then((m) => m.ProductDetail),
+      },
+      {
+        path: 'cart',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/cart/cart-page').then((m) => m.CartPage),
+      },
+      {
+        path: 'checkout',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/orders/checkout/checkout').then((m) => m.Checkout),
+      },
+      {
+        path: 'orders',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/orders/history/order-history').then((m) => m.OrderHistory),
+      },
+    ],
   },
   { path: '**', redirectTo: '' },
 ];

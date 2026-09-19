@@ -1,13 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CartService } from '../../cart/cart.service';
 import { BehaviorTrackingService } from '../../../core/tracking/behavior-tracking.service';
-import type { Product } from '../../../core/models/product.model';
+import type { RecommendationItem } from '../../../core/models/recommendation.model';
 import { ProductCard } from '../../../shared/components/product-card/product-card';
 import { RecService } from '../rec.service';
 
 @Component({
   selector: 'app-rec-widget',
-  imports: [ProductCard],
+  imports: [RouterLink, ProductCard],
   templateUrl: './rec-widget.html',
 })
 export class RecWidget {
@@ -15,7 +16,7 @@ export class RecWidget {
   private readonly cartService = inject(CartService);
   private readonly tracking = inject(BehaviorTrackingService);
 
-  readonly recommendations = signal<Product[]>([]);
+  readonly recommendations = signal<RecommendationItem[]>([]);
   readonly coldStart = signal(false);
   readonly loading = signal(true);
 
@@ -26,7 +27,7 @@ export class RecWidget {
   private async load(): Promise<void> {
     try {
       const result = await this.recService.getRecommendations(10);
-      this.recommendations.set(result.items.map((item) => item.product));
+      this.recommendations.set(result.items);
       this.coldStart.set(result.coldStart);
     } finally {
       this.loading.set(false);

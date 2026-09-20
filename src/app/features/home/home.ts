@@ -1,7 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+import type { Category } from '../../core/models/category.model';
+import { CategoriesService } from '../categories/categories.service';
 import { RecWidget } from '../recommendations/rec-widget/rec-widget';
 
 @Component({
@@ -11,13 +13,19 @@ import { RecWidget } from '../recommendations/rec-widget/rec-widget';
 })
 export class Home {
   private readonly router = inject(Router);
+  private readonly categoriesService = inject(CategoriesService);
   readonly authService = inject(AuthService);
 
   searchQuery = '';
+  readonly categories = signal<Category[]>([]);
 
-  // Placeholder tabs — no categories API yet in zipmart-backend-nest, kept
-  // static/disabled rather than wired to fake filtering. See DESIGN.md notes.
-  readonly staticFilterTabs = ['Điện tử & Công nghệ', 'Phụ kiện', 'Ưu đãi đặc quyền'];
+  constructor() {
+    void this.loadCategories();
+  }
+
+  private async loadCategories(): Promise<void> {
+    this.categories.set(await this.categoriesService.getAll());
+  }
 
   onSearch(): void {
     void this.router.navigate(['/products'], { queryParams: { q: this.searchQuery || null } });

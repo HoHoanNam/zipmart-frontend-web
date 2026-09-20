@@ -30,15 +30,14 @@
         <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
         Tất cả đề xuất AI
       </button>
-      @for (tab of staticFilterTabs; track tab) {
-        <button
-          type="button"
-          disabled
-          title="Sắp ra mắt"
-          class="rounded-control bg-white px-4 py-2 text-body-medium text-neutral-300"
+      @for (category of categories(); track category.id) {
+        <a
+          [routerLink]="['/products']"
+          [queryParams]="{ categoryId: category.id }"
+          class="rounded-control bg-white px-4 py-2 text-body-medium text-neutral-600 transition-colors hover:bg-neutral-100"
         >
-          {{ tab }}
-        </button>
+          {{ category.name }}
+        </a>
       }
     </div>
     <div class="flex items-center gap-2">

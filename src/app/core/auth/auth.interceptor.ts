@@ -24,6 +24,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
+      if (!tokenStorage.getRefreshToken()) {
+        // No session to refresh (guest, or already logged out) — a 401 here
+        // is just "this endpoint needs auth", not an expired session. Don't
+        // force a logout()/redirect for someone who was never logged in.
+        return throwError(() => error);
+      }
+
       // Silent-refresh once on 401, then retry the original request.
       return from(authService.refresh()).pipe(
         switchMap((tokens) =>

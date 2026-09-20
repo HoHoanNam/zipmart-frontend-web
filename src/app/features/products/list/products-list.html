@@ -1,4 +1,4 @@
-<div class="mb-6 flex items-center justify-between gap-4">
+<div class="mb-2 flex items-center justify-between gap-4">
   <h1 class="text-headline-1 text-neutral-900">Sản phẩm</h1>
 
   <input
@@ -9,6 +9,19 @@
     class="w-64 rounded-control border border-neutral-300 px-3 py-2 text-body-regular focus:border-brand focus:outline-none"
   />
 </div>
+
+@if (activeCategory(); as category) {
+  <div class="mb-6 flex items-center gap-2">
+    <span
+      class="inline-flex items-center gap-1.5 rounded-badge bg-neutral-100 px-2.5 py-1 text-caption-bold text-neutral-900"
+    >
+      {{ category.name }}
+      <a routerLink="/products" class="text-neutral-600 hover:text-danger" aria-label="Xoá bộ lọc">
+        ✕
+      </a>
+    </span>
+  </div>
+}
 
 @if (loading()) {
   <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 xl:grid-cols-4">

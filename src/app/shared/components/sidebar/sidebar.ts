@@ -2,8 +2,10 @@ import { DecimalPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
+import type { Category } from '../../../core/models/category.model';
 import type { Order } from '../../../core/models/order.model';
 import type { RecommendationItem } from '../../../core/models/recommendation.model';
+import { CategoriesService } from '../../../features/categories/categories.service';
 import { OrdersService } from '../../../features/orders/orders.service';
 import { RecService } from '../../../features/recommendations/rec.service';
 import { VndCurrencyPipe } from '../../pipes/vnd-currency.pipe';
@@ -27,23 +29,30 @@ const STATUS_LABEL: Record<Order['status'], string> = {
 })
 export class Sidebar {
   readonly authService = inject(AuthService);
+  private readonly categoriesService = inject(CategoriesService);
   private readonly ordersService = inject(OrdersService);
   private readonly recService = inject(RecService);
 
-  // Placeholder content — no categories/best-seller API exists yet in
-  // zipmart-backend-nest (see DESIGN.md plan notes). Static on purpose, not
-  // fetched, so nobody mistakes it for real data.
-  readonly staticCategories = ['Điện tử & Công nghệ', 'Thời trang', 'Gia dụng', 'Sách & Văn phòng phẩm'];
+  readonly categories = signal<Category[]>([]);
+
+  // Placeholder content — no best-seller API exists yet in zipmart-backend-nest
+  // (see DESIGN.md plan notes). Static on purpose, not fetched, so nobody
+  // mistakes it for real data.
   readonly staticBestSellers = ['Tai nghe không dây chống ồn', 'Bàn phím cơ không dây'];
 
   readonly recentOrders = signal<Order[]>([]);
   readonly topRecommendation = signal<RecommendationItem | null>(null);
 
   constructor() {
+    void this.loadCategories();
     if (this.authService.isAuthenticated()) {
       void this.loadRecentOrders();
       void this.loadTopRecommendation();
     }
+  }
+
+  private async loadCategories(): Promise<void> {
+    this.categories.set(await this.categoriesService.getAll());
   }
 
   statusLabel(status: Order['status']): string {

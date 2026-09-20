@@ -1,45 +1,77 @@
 @if (loading()) {
-  <div class="h-96 animate-pulse rounded-xl bg-slate-100"></div>
-} @else if (product()) {
+  <div class="h-96 animate-pulse rounded-card bg-neutral-100"></div>
+} @else if (product(); as product) {
+  @if (category(); as cat) {
+    <p class="mb-4 text-caption text-neutral-600">
+      <span>Sản phẩm</span>
+      <span class="mx-1">/</span>
+      <span class="text-neutral-900">{{ cat.name }}</span>
+    </p>
+  }
+
   <div class="grid gap-8 md:grid-cols-2">
-    <div class="flex h-80 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
-      <span class="text-4xl">{{ product()!.name.charAt(0).toUpperCase() }}</span>
+    <div class="flex aspect-square items-center justify-center overflow-hidden rounded-card bg-neutral-50">
+      @if (product.images.length > 0) {
+        <img [src]="product.images[0]" [alt]="product.name" class="h-full w-full object-cover" />
+      } @else {
+        <span class="text-headline-1 text-neutral-300">{{ product.name.charAt(0).toUpperCase() }}</span>
+      }
     </div>
 
     <div>
-      <h1 class="text-2xl font-bold text-slate-900">{{ product()!.name }}</h1>
-      <p class="mt-2 text-2xl font-semibold text-indigo-600">{{ product()!.price | vndCurrency }}</p>
-      <p class="mt-1 text-sm text-slate-500">
-        {{ product()!.stock > 0 ? 'Còn ' + product()!.stock + ' sản phẩm' : 'Hết hàng' }}
+      @if (product.brand) {
+        <span class="text-caption uppercase tracking-wide text-neutral-600">{{ product.brand }}</span>
+      }
+      <h1 class="mt-1 text-headline-1 text-neutral-900">{{ product.name }}</h1>
+      <p class="mt-2 text-price-lg text-brand">{{ product.price | vndCurrency }}</p>
+      <p class="mt-1 text-body-regular text-neutral-600">
+        {{ product.stock > 0 ? 'Còn ' + product.stock + ' sản phẩm' : 'Hết hàng' }}
       </p>
+
+      @if (product.description) {
+        <p class="mt-4 text-body-regular text-neutral-600">{{ product.description }}</p>
+      }
+
+      @if (attributeRows().length > 0) {
+        <dl class="mt-6 divide-y divide-neutral-100 rounded-card border border-neutral-100">
+          @for (row of attributeRows(); track row.label) {
+            <div class="flex justify-between gap-4 px-4 py-2.5 text-body-regular">
+              <dt class="text-neutral-600">{{ row.label }}</dt>
+              <dd class="text-right text-neutral-900">{{ row.value }}</dd>
+            </div>
+          }
+        </dl>
+      }
 
       <div class="mt-6 flex items-center gap-3">
         <input
           type="number"
           min="1"
-          [max]="product()!.stock"
+          [max]="product.stock"
           [value]="quantity()"
           (change)="quantity.set(+($any($event.target).value))"
-          class="w-20 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          class="w-20 rounded-control border border-neutral-300 px-3 py-2 text-body-regular"
         />
         <button
           type="button"
-          [disabled]="product()!.stock === 0"
+          [disabled]="product.stock === 0"
           (click)="onAddToCart()"
-          class="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+          class="rounded-control bg-brand px-5 py-2 text-body-medium text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:bg-neutral-300"
         >
           Thêm vào giỏ
         </button>
         @if (justAdded()) {
-          <span class="text-sm text-green-600">Đã thêm vào giỏ!</span>
+          <span class="text-body-regular text-success">Đã thêm vào giỏ!</span>
         }
       </div>
     </div>
   </div>
 
   @if (authService.isAuthenticated()) {
-    <app-rec-widget />
+    <div class="mt-12">
+      <app-rec-widget />
+    </div>
   }
 } @else {
-  <p class="text-sm text-slate-500">Không tìm thấy sản phẩm.</p>
+  <p class="text-body-regular text-neutral-600">Không tìm thấy sản phẩm.</p>
 }

@@ -8,9 +8,12 @@ import type { Product, ProductPage } from '../../core/models/product.model';
 export class ProductsService {
   private readonly http = inject(HttpClient);
 
-  findAll(params: { search?: string; page?: number; limit?: number } = {}): Promise<ProductPage> {
+  findAll(
+    params: { search?: string; categoryId?: string; page?: number; limit?: number } = {},
+  ): Promise<ProductPage> {
     const query = new URLSearchParams();
     if (params.search) query.set('search', params.search);
+    if (params.categoryId) query.set('categoryId', params.categoryId);
     query.set('page', String(params.page ?? 1));
     query.set('limit', String(params.limit ?? 20));
 

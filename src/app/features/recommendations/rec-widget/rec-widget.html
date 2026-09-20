@@ -1,5 +1,5 @@
 <section>
-  <div class="mb-space-md flex items-center justify-between">
+  <div class="mb-4 flex items-center justify-between">
     <div class="flex items-center gap-2">
       <span class="material-symbols-outlined text-[22px] text-brand">stars</span>
       <h2 class="text-headline-2 text-neutral-900">Sản Phẩm Đề Xuất Nổi Bật</h2>
@@ -11,7 +11,7 @@
   </div>
 
   @if (loading()) {
-    <div class="grid grid-cols-2 gap-space-lg sm:grid-cols-3 xl:grid-cols-4">
+    <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 xl:grid-cols-4">
       @for (i of [1, 2, 3, 4]; track i) {
         <div class="h-64 animate-pulse rounded-card bg-neutral-100"></div>
       }
@@ -19,7 +19,7 @@
   } @else if (recommendations().length === 0) {
     <p class="text-body-regular text-neutral-600">Chưa có sản phẩm để gợi ý.</p>
   } @else {
-    <div class="grid grid-cols-2 gap-space-lg sm:grid-cols-3 xl:grid-cols-4">
+    <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 xl:grid-cols-4">
       @for (rec of recommendations(); track rec.productId) {
         <app-product-card
           [product]="rec.product"

@@ -1,8 +1,8 @@
 <aside
-  class="sticky top-20 hidden h-[calc(100vh-96px)] w-65 flex-col gap-space-lg overflow-y-auto lg:flex"
+  class="sticky top-20 hidden h-[calc(100vh-96px)] w-65 flex-col gap-6 overflow-y-auto lg:flex"
 >
   <section>
-    <div class="mb-space-xs flex items-center justify-between">
+    <div class="mb-1 flex items-center justify-between">
       <span class="text-caption-bold uppercase tracking-wider text-neutral-600"> Danh mục </span>
       <span class="rounded-badge bg-neutral-100 px-1.5 py-0.5 text-caption text-neutral-600">
         Sắp ra mắt
@@ -11,7 +11,7 @@
     <div class="space-y-1">
       @for (category of staticCategories; track category) {
         <div
-          class="flex items-center gap-space-sm rounded-control px-3 py-2 text-body-medium text-neutral-600"
+          class="flex items-center gap-2 rounded-control px-3 py-2 text-body-medium text-neutral-600"
         >
           <span class="material-symbols-outlined text-[20px] text-neutral-300">category</span>
           <span>{{ category }}</span>
@@ -23,7 +23,7 @@
   <hr class="border-neutral-100" />
 
   <section>
-    <div class="mb-space-xs flex items-center justify-between">
+    <div class="mb-1 flex items-center justify-between">
       <span class="text-caption-bold uppercase tracking-wider text-neutral-600">
         Bán chạy nhất
       </span>
@@ -33,7 +33,7 @@
     </div>
     <div class="space-y-1">
       @for (item of staticBestSellers; track item) {
-        <div class="flex items-center gap-space-sm rounded-control px-2 py-2 text-neutral-600">
+        <div class="flex items-center gap-2 rounded-control px-2 py-2 text-neutral-600">
           <span
             class="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-neutral-50 text-neutral-300"
           >
@@ -49,13 +49,13 @@
     <hr class="border-neutral-100" />
 
     <section>
-      <span class="mb-space-xs block text-caption-bold uppercase tracking-wider text-neutral-600">
+      <span class="mb-1 block text-caption-bold uppercase tracking-wider text-neutral-600">
         Lịch sử đơn hàng
       </span>
       @if (recentOrders().length === 0) {
         <p class="text-caption text-neutral-600">Chưa có đơn hàng nào.</p>
       } @else {
-        <div class="space-y-space-xs">
+        <div class="space-y-1">
           @for (order of recentOrders(); track order.id) {
             <a routerLink="/orders" class="block rounded-control p-2 hover:bg-neutral-50">
               <div class="flex items-center justify-between text-[11px]">
@@ -79,7 +79,7 @@
       <hr class="border-neutral-100" />
 
       <section>
-        <span class="mb-space-xs block text-caption-bold uppercase tracking-wider text-neutral-600">
+        <span class="mb-1 block text-caption-bold uppercase tracking-wider text-neutral-600">
           Gợi ý cho bạn
         </span>
         <a

@@ -1,15 +1,15 @@
-<div class="flex flex-col gap-space-xl">
+<div class="flex flex-col gap-8">
   <!-- Hero -->
   <section
-    class="relative overflow-hidden rounded-card bg-linear-to-br from-brand-light via-brand to-brand-dark p-space-xl text-white shadow-hover"
+    class="relative overflow-hidden rounded-card bg-linear-to-br from-brand-light via-brand to-brand-dark p-8 text-white shadow-hover"
   >
     <div class="relative z-10 max-w-2xl">
-      <div class="mb-space-md inline-flex items-center gap-2 rounded-full bg-white/15 px-2.5 py-1 backdrop-blur-md">
+      <div class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-2.5 py-1 backdrop-blur-md">
         <span class="material-symbols-outlined text-[15px]">auto_awesome</span>
         <span class="text-caption-bold uppercase tracking-wider">Cá nhân hoá trải nghiệm mua sắm</span>
       </div>
-      <h1 class="mb-space-sm text-headline-1">Mua sắm thông minh hơn với zipmart</h1>
-      <p class="mb-space-lg text-body-medium text-white/90">
+      <h1 class="mb-2 text-headline-1">Mua sắm thông minh hơn với zipmart</h1>
+      <p class="mb-6 text-body-medium text-white/90">
         Gợi ý sản phẩm được cá nhân hoá dựa trên hành vi mua sắm của bạn — càng dùng nhiều,
         gợi ý càng chính xác.
       </p>
@@ -24,8 +24,8 @@
   </section>
 
   <!-- Filter / tab bar — static, no categories API yet; see DESIGN.md notes -->
-  <div class="flex flex-wrap items-center justify-between gap-space-md">
-    <div class="flex items-center gap-space-xs overflow-x-auto pb-1">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-1 overflow-x-auto pb-1">
       <button type="button" class="flex items-center gap-1.5 rounded-control bg-brand px-4 py-2 text-body-medium text-white shadow-card">
         <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
         Tất cả đề xuất AI
@@ -41,7 +41,7 @@
         </button>
       }
     </div>
-    <div class="flex items-center gap-space-sm">
+    <div class="flex items-center gap-2">
       <span class="text-caption text-neutral-600">Sắp xếp:</span>
       <select disabled title="Sắp ra mắt" class="rounded-control bg-white px-3 py-1.5 text-body-medium text-neutral-300 shadow-card">
         <option>Độ phù hợp thuật toán (Cao nhất)</option>
@@ -53,7 +53,7 @@
   @if (authService.isAuthenticated()) {
     <app-rec-widget />
   } @else {
-    <div class="rounded-card border border-dashed border-neutral-300 p-space-lg text-center">
+    <div class="rounded-card border border-dashed border-neutral-300 p-6 text-center">
       <p class="text-body-regular text-neutral-600">
         <a routerLink="/login" class="font-medium text-brand hover:underline">Đăng nhập</a>
         để xem gợi ý sản phẩm dành riêng cho bạn.
@@ -62,8 +62,8 @@
   }
 
   <!-- Quick search banner -->
-  <section class="flex flex-col items-center justify-between gap-space-lg rounded-card bg-white p-space-lg shadow-card md:flex-row">
-    <div class="flex items-start gap-space-md">
+  <section class="flex flex-col items-center justify-between gap-6 rounded-card bg-white p-6 shadow-card md:flex-row">
+    <div class="flex items-start gap-4">
       <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-card bg-neutral-100 text-brand">
         <span class="material-symbols-outlined text-[28px]">psychology_alt</span>
       </div>
@@ -75,7 +75,7 @@
       </div>
     </div>
     <div class="w-full shrink-0 md:w-auto">
-      <div class="flex items-center gap-space-xs rounded-control bg-neutral-50 p-1.5">
+      <div class="flex items-center gap-1 rounded-control bg-neutral-50 p-1.5">
         <input
           type="search"
           name="quickSearch"

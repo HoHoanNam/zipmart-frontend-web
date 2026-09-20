@@ -1,4 +1,4 @@
-<div class="mb-space-lg flex items-center justify-between gap-space-md">
+<div class="mb-6 flex items-center justify-between gap-4">
   <h1 class="text-headline-1 text-neutral-900">Sản phẩm</h1>
 
   <input
@@ -11,7 +11,7 @@
 </div>
 
 @if (loading()) {
-  <div class="grid grid-cols-2 gap-space-lg sm:grid-cols-3 xl:grid-cols-4">
+  <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 xl:grid-cols-4">
     @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
       <div class="h-64 animate-pulse rounded-card bg-neutral-100"></div>
     }
@@ -19,14 +19,14 @@
 } @else if (products().length === 0) {
   <p class="text-body-regular text-neutral-600">Không tìm thấy sản phẩm nào.</p>
 } @else {
-  <div class="grid grid-cols-2 gap-space-lg sm:grid-cols-3 xl:grid-cols-4">
+  <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 xl:grid-cols-4">
     @for (product of products(); track product.id) {
       <app-product-card [product]="product" (addToCart)="onAddToCart($event)" />
     }
   </div>
 
   @if (total() > limit) {
-    <div class="mt-space-lg flex justify-center gap-2">
+    <div class="mt-6 flex justify-center gap-2">
       @for (p of [1, 2, 3, 4, 5]; track p) {
         @if ((p - 1) * limit < total()) {
           <button

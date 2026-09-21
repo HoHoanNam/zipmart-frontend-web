@@ -7,6 +7,7 @@ import type { Product } from '../../../core/models/product.model';
 import { CartService } from '../../cart/cart.service';
 import { VndCurrencyPipe } from '../../../shared/pipes/vnd-currency.pipe';
 import { RecWidget } from '../../recommendations/rec-widget/rec-widget';
+import { ToastService } from '../../../shared/toast/toast.service';
 import { CategoriesService } from '../../categories/categories.service';
 import { ProductsService } from '../products.service';
 
@@ -81,13 +82,13 @@ export class ProductDetail {
   private readonly categoriesService = inject(CategoriesService);
   private readonly cartService = inject(CartService);
   private readonly tracking = inject(BehaviorTrackingService);
+  private readonly toastService = inject(ToastService);
   readonly authService = inject(AuthService);
 
   readonly product = signal<Product | null>(null);
   readonly category = signal<Category | null>(null);
   readonly loading = signal(true);
   readonly quantity = signal(1);
-  readonly justAdded = signal(false);
   readonly activeImageIndex = signal(0);
 
   readonly attributeRows = computed<AttributeRow[]>(() => {
@@ -134,7 +135,6 @@ export class ProductDetail {
 
     await this.cartService.addItem(product.id, this.quantity());
     this.tracking.track(product.id, 'add_to_cart');
-    this.justAdded.set(true);
-    setTimeout(() => this.justAdded.set(false), 2000);
+    this.toastService.showCartAdded(product.name);
   }
 }

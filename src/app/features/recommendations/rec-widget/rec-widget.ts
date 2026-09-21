@@ -4,6 +4,7 @@ import { CartService } from '../../cart/cart.service';
 import { BehaviorTrackingService } from '../../../core/tracking/behavior-tracking.service';
 import type { RecommendationItem } from '../../../core/models/recommendation.model';
 import { ProductCard } from '../../../shared/components/product-card/product-card';
+import { ToastService } from '../../../shared/toast/toast.service';
 import { RecService } from '../rec.service';
 
 @Component({
@@ -15,6 +16,7 @@ export class RecWidget {
   private readonly recService = inject(RecService);
   private readonly cartService = inject(CartService);
   private readonly tracking = inject(BehaviorTrackingService);
+  private readonly toastService = inject(ToastService);
 
   readonly recommendations = signal<RecommendationItem[]>([]);
   readonly coldStart = signal(false);
@@ -35,7 +37,11 @@ export class RecWidget {
   }
 
   async onAddToCart(productId: string): Promise<void> {
+    const rec = this.recommendations().find((r) => r.productId === productId);
     await this.cartService.addItem(productId, 1);
     this.tracking.track(productId, 'add_to_cart');
+    if (rec) {
+      this.toastService.showCartAdded(rec.product.name);
+    }
   }
 }

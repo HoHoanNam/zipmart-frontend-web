@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CartService } from '../../../features/cart/cart.service';
+import { WishlistService } from '../../../features/wishlist/wishlist.service';
 
 @Component({
   selector: 'app-navbar',
@@ -13,6 +14,7 @@ export class Navbar {
   private readonly router = inject(Router);
   readonly authService = inject(AuthService);
   readonly cartService = inject(CartService);
+  readonly wishlistService = inject(WishlistService);
 
   search = '';
 

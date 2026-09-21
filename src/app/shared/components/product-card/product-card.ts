@@ -1,7 +1,9 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { Product } from '../../../core/models/product.model';
+import { ToastService } from '../../toast/toast.service';
+import { WishlistService } from '../../../features/wishlist/wishlist.service';
 import { VndCurrencyPipe } from '../../pipes/vnd-currency.pipe';
 
 @Component({
@@ -10,6 +12,9 @@ import { VndCurrencyPipe } from '../../pipes/vnd-currency.pipe';
   templateUrl: './product-card.html',
 })
 export class ProductCard {
+  private readonly wishlistService = inject(WishlistService);
+  private readonly toastService = inject(ToastService);
+
   readonly product = input.required<Product>();
   readonly badge = input<string | null>(null);
   /** 0-1 — real recommendation score from `RecommendationItem.score`. Badge only renders when set. */
@@ -17,8 +22,7 @@ export class ProductCard {
 
   readonly addToCart = output<string>();
 
-  /** Local-only UI state, not persisted — no wishlist backend exists yet. */
-  readonly wishlisted = signal(false);
+  readonly wishlisted = computed(() => this.wishlistService.isWishlisted(this.product().id));
 
   onAddToCart(event: Event): void {
     event.preventDefault();
@@ -26,9 +30,15 @@ export class ProductCard {
     this.addToCart.emit(this.product().id);
   }
 
-  onToggleWishlist(event: Event): void {
+  async onToggleWishlist(event: Event): Promise<void> {
     event.preventDefault();
     event.stopPropagation();
-    this.wishlisted.update((value) => !value);
+    const name = this.product().name;
+    const nowWishlisted = await this.wishlistService.toggle(this.product().id);
+    if (nowWishlisted) {
+      this.toastService.showWishlistAdded(name);
+    } else {
+      this.toastService.showWishlistRemoved(name);
+    }
   }
 }

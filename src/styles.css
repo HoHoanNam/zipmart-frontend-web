@@ -107,3 +107,37 @@
     'GRAD' 0,
     'opsz' 24;
 }
+
+/* Toast entrance animations — plain CSS so no @angular/animations dependency
+   is needed; a freshly-inserted DOM node plays its `animation` automatically.
+   Two distinct motions so the "cart" and "wishlist" toast variants read as
+   visually different effects, not just different colors. */
+@keyframes toast-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-toast-slide-up {
+  animation: toast-slide-up 0.25s ease-out;
+}
+
+.animate-toast-scale-in {
+  animation: toast-scale-in 0.25s ease-out;
+}

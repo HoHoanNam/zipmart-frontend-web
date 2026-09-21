@@ -6,6 +6,7 @@ import { BehaviorTrackingService } from '../../../core/tracking/behavior-trackin
 import type { Category } from '../../../core/models/category.model';
 import type { Product } from '../../../core/models/product.model';
 import { ProductCard } from '../../../shared/components/product-card/product-card';
+import { ToastService } from '../../../shared/toast/toast.service';
 import { CategoriesService } from '../../categories/categories.service';
 import { ProductsService } from '../products.service';
 
@@ -19,6 +20,7 @@ export class ProductsList {
   private readonly categoriesService = inject(CategoriesService);
   private readonly cartService = inject(CartService);
   private readonly tracking = inject(BehaviorTrackingService);
+  private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
 
   readonly products = signal<Product[]>([]);
@@ -81,7 +83,11 @@ export class ProductsList {
   }
 
   async onAddToCart(productId: string): Promise<void> {
+    const product = this.products().find((p) => p.id === productId);
     await this.cartService.addItem(productId, 1);
     this.tracking.track(productId, 'add_to_cart');
+    if (product) {
+      this.toastService.showCartAdded(product.name);
+    }
   }
 }

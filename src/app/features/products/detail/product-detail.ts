@@ -88,6 +88,7 @@ export class ProductDetail {
   readonly loading = signal(true);
   readonly quantity = signal(1);
   readonly justAdded = signal(false);
+  readonly activeImageIndex = signal(0);
 
   readonly attributeRows = computed<AttributeRow[]>(() => {
     const product = this.product();
@@ -111,6 +112,7 @@ export class ProductDetail {
     try {
       const product = await this.productsService.findOne(id);
       this.product.set(product);
+      this.activeImageIndex.set(0);
       this.tracking.track(id, 'view');
 
       if (product.categoryId) {
@@ -120,6 +122,10 @@ export class ProductDetail {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  selectImage(index: number): void {
+    this.activeImageIndex.set(index);
   }
 
   async onAddToCart(): Promise<void> {

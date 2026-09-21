@@ -10,11 +10,58 @@
   }
 
   <div class="grid gap-8 md:grid-cols-2">
-    <div class="flex aspect-square items-center justify-center overflow-hidden rounded-card bg-neutral-50">
-      @if (product.images.length > 0) {
-        <img [src]="product.images[0]" [alt]="product.name" class="h-full w-full object-cover" />
-      } @else {
-        <span class="text-headline-1 text-neutral-300">{{ product.name.charAt(0).toUpperCase() }}</span>
+    <div class="flex flex-col gap-3">
+      <div class="relative flex aspect-square items-center justify-center overflow-hidden rounded-card bg-neutral-50">
+        @if (product.images.length > 0) {
+          <img
+            [src]="product.images[activeImageIndex()]"
+            [alt]="product.name"
+            class="h-full w-full object-cover"
+          />
+        } @else {
+          <span class="text-headline-1 text-neutral-300">{{ product.name.charAt(0).toUpperCase() }}</span>
+        }
+
+        @if (product.images.length > 1) {
+          <button
+            type="button"
+            aria-label="Ảnh trước"
+            (click)="selectImage((activeImageIndex() - 1 + product.images.length) % product.images.length)"
+            class="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-neutral-700 shadow-card hover:bg-white"
+          >
+            <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+          </button>
+          <button
+            type="button"
+            aria-label="Ảnh sau"
+            (click)="selectImage((activeImageIndex() + 1) % product.images.length)"
+            class="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-neutral-700 shadow-card hover:bg-white"
+          >
+            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+          </button>
+
+          <span
+            class="absolute bottom-2 right-2 rounded-badge bg-neutral-900/60 px-2 py-0.5 text-caption text-white"
+          >
+            {{ activeImageIndex() + 1 }}/{{ product.images.length }}
+          </span>
+        }
+      </div>
+
+      @if (product.images.length > 1) {
+        <div class="flex gap-2 overflow-x-auto">
+          @for (url of product.images; track url; let i = $index) {
+            <button
+              type="button"
+              (click)="selectImage(i)"
+              class="h-16 w-16 shrink-0 overflow-hidden rounded-control border-2 transition-colors"
+              [class.border-brand]="i === activeImageIndex()"
+              [class.border-transparent]="i !== activeImageIndex()"
+            >
+              <img [src]="url" [alt]="product.name + ' ' + (i + 1)" class="h-full w-full object-cover" />
+            </button>
+          }
+        </div>
       }
     </div>
 

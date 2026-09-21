@@ -1,0 +1,189 @@
+@if (loading()) {
+  <div class="h-96 animate-pulse rounded-card bg-neutral-50"></div>
+} @else if (order(); as order) {
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <p class="text-caption text-neutral-600">
+        <a routerLink="/orders" class="hover:underline">Đơn hàng của tôi</a>
+        <span class="mx-1">/</span>
+        <span class="text-neutral-900">{{ order.id.slice(0, 8) }}</span>
+      </p>
+      <h1 class="mt-1 text-headline-1 text-neutral-900">Đơn hàng #{{ order.id.slice(0, 8) }}</h1>
+      <p class="mt-1 text-body-regular text-neutral-600">
+        {{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+      </p>
+    </div>
+    <span class="rounded-badge bg-neutral-100 px-3 py-1 text-body-medium font-medium text-neutral-700">
+      {{ statusLabel(order.status) }}
+    </span>
+  </div>
+
+  @if (error()) {
+    <p class="mb-4 rounded-control border border-red-200 bg-red-50 px-3 py-2 text-body-regular text-danger">
+      {{ error() }}
+    </p>
+  }
+
+  <div class="grid gap-6 md:grid-cols-3">
+    <div class="space-y-4 md:col-span-2">
+      <div class="rounded-card border border-neutral-100 bg-white shadow-card">
+        <h2 class="border-b border-neutral-100 px-4 py-3 text-body-medium font-semibold text-neutral-900">
+          Sản phẩm đã đặt
+        </h2>
+        <div class="divide-y divide-neutral-100">
+          @for (item of order.items; track item.id) {
+            <div class="flex items-center gap-4 px-4 py-3">
+              <div
+                class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-control bg-neutral-50 text-neutral-400"
+              >
+                @if (item.productImageUrl) {
+                  <img [src]="item.productImageUrl" [alt]="item.productName ?? ''" class="h-full w-full object-cover" />
+                } @else {
+                  {{ (item.productName ?? '?').charAt(0).toUpperCase() }}
+                }
+              </div>
+              <div class="flex-1">
+                <p class="text-body-medium text-neutral-900">{{ item.productName ?? 'Sản phẩm đã ngừng kinh doanh' }}</p>
+                <p class="text-body-regular text-neutral-600">{{ item.unitPrice | vndCurrency }} × {{ item.quantity }}</p>
+              </div>
+              <p class="text-body-medium font-semibold text-neutral-900">
+                {{ (+item.unitPrice * item.quantity).toString() | vndCurrency }}
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="rounded-card border border-neutral-100 bg-white p-4 shadow-card">
+        <div class="flex items-center justify-between">
+          <h2 class="text-body-medium font-semibold text-neutral-900">Địa chỉ giao hàng & thanh toán</h2>
+          @if (order.status === 'pending' && !editing()) {
+            <div class="flex gap-3">
+              <button type="button" (click)="startEdit()" class="text-body-regular text-brand hover:underline">
+                Cập nhật
+              </button>
+              <button
+                type="button"
+                [disabled]="cancelling()"
+                (click)="cancelOrder()"
+                class="text-body-regular text-danger hover:underline disabled:opacity-60"
+              >
+                {{ cancelling() ? 'Đang huỷ...' : 'Huỷ đơn' }}
+              </button>
+            </div>
+          }
+        </div>
+
+        @if (editing()) {
+          <div class="mt-4 space-y-3">
+            <input
+              type="text"
+              placeholder="Họ tên người nhận"
+              [(ngModel)]="editForm.recipientName"
+              class="w-full rounded-control border border-neutral-300 px-3 py-2 text-body-regular"
+            />
+            <input
+              type="tel"
+              placeholder="Số điện thoại"
+              [(ngModel)]="editForm.phoneNumber"
+              class="w-full rounded-control border border-neutral-300 px-3 py-2 text-body-regular"
+            />
+            <div class="grid grid-cols-3 gap-3">
+              <input
+                type="text"
+                placeholder="Tỉnh/Thành phố"
+                [(ngModel)]="editForm.city"
+                class="rounded-control border border-neutral-300 px-3 py-2 text-body-regular"
+              />
+              <input
+                type="text"
+                placeholder="Quận/Huyện"
+                [(ngModel)]="editForm.district"
+                class="rounded-control border border-neutral-300 px-3 py-2 text-body-regular"
+              />
+              <input
+                type="text"
+                placeholder="Phường/Xã"
+                [(ngModel)]="editForm.ward"
+                class="rounded-control border border-neutral-300 px-3 py-2 text-body-regular"
+              />
+            </div>
+            <input
+              type="text"
+              placeholder="Địa chỉ cụ thể"
+              [(ngModel)]="editForm.streetAddress"
+              class="w-full rounded-control border border-neutral-300 px-3 py-2 text-body-regular"
+            />
+            <select
+              [(ngModel)]="editForm.paymentMethod"
+              class="w-full rounded-control border border-neutral-300 px-3 py-2 text-body-regular"
+            >
+              <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+              <option value="credit">Thẻ tín dụng (Credit)</option>
+            </select>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                [disabled]="saving()"
+                (click)="saveEdit()"
+                class="rounded-control bg-brand px-4 py-2 text-body-medium text-white hover:bg-brand-dark disabled:opacity-60"
+              >
+                {{ saving() ? 'Đang lưu...' : 'Lưu' }}
+              </button>
+              <button
+                type="button"
+                (click)="cancelEdit()"
+                class="rounded-control border border-neutral-300 px-4 py-2 text-body-medium text-neutral-600 hover:bg-neutral-50"
+              >
+                Huỷ
+              </button>
+            </div>
+          </div>
+        } @else {
+          <dl class="mt-4 space-y-2 text-body-regular">
+            <div class="flex justify-between gap-4">
+              <dt class="text-neutral-600">Người nhận</dt>
+              <dd class="text-right text-neutral-900">{{ order.recipientName || '—' }}</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-neutral-600">Điện thoại</dt>
+              <dd class="text-right text-neutral-900">{{ order.phoneNumber || '—' }}</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-neutral-600">Địa chỉ</dt>
+              <dd class="text-right text-neutral-900">
+                {{ order.streetAddress }}, {{ order.ward }}, {{ order.district }}, {{ order.city }}
+              </dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-neutral-600">Phương thức thanh toán</dt>
+              <dd class="text-right text-neutral-900">{{ paymentMethodLabel(order.paymentMethod) }}</dd>
+            </div>
+          </dl>
+        }
+      </div>
+    </div>
+
+    <div class="h-fit rounded-card border border-neutral-100 bg-white p-4 shadow-card md:col-span-1">
+      <h2 class="text-body-medium font-semibold text-neutral-900">Tóm tắt thanh toán</h2>
+      <dl class="mt-4 space-y-2 text-body-regular">
+        @if (+order.discountAmount > 0) {
+          <div class="flex justify-between text-success">
+            <dt>Giảm giá{{ order.couponCode ? ' (' + order.couponCode + ')' : '' }}</dt>
+            <dd>-{{ order.discountAmount | vndCurrency }}</dd>
+          </div>
+        }
+        <div class="flex justify-between">
+          <dt class="text-neutral-600">Thuế VAT</dt>
+          <dd class="text-neutral-900">{{ order.taxAmount | vndCurrency }}</dd>
+        </div>
+        <div class="flex justify-between gap-2 border-t border-neutral-100 pt-2">
+          <dt class="text-body-medium font-semibold text-neutral-900">Tổng cộng</dt>
+          <dd class="text-price-lg text-neutral-900">{{ order.total | vndCurrency }}</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+} @else {
+  <p class="text-body-regular text-neutral-600">Không tìm thấy đơn hàng.</p>
+}

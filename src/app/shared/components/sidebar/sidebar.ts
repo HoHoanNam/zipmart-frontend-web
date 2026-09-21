@@ -14,6 +14,8 @@ const STATUS_LABEL: Record<Order['status'], string> = {
   pending: 'Đang xử lý',
   paid: 'Đã thanh toán',
   shipped: 'Đã giao',
+  completed: 'Hoàn thành',
+  cancelled: 'Đã huỷ',
 };
 
 /**

@@ -1,9 +1,22 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import type { Order } from '../../../core/models/order.model';
+import type { Order, OrderStatus, PaymentMethod } from '../../../core/models/order.model';
 import { VndCurrencyPipe } from '../../../shared/pipes/vnd-currency.pipe';
 import { OrdersService } from '../orders.service';
+
+const STATUS_LABELS: Record<OrderStatus, string> = {
+  pending: 'Đang xử lý',
+  paid: 'Đã thanh toán',
+  shipped: 'Đã giao',
+  completed: 'Hoàn thành',
+  cancelled: 'Đã huỷ',
+};
+
+const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  cod: 'COD',
+  credit: 'Credit',
+};
 
 @Component({
   selector: 'app-order-history',
@@ -29,7 +42,15 @@ export class OrderHistory {
     }
   }
 
-  statusLabel(status: Order['status']): string {
-    return { pending: 'Đang xử lý', paid: 'Đã thanh toán', shipped: 'Đã giao' }[status];
+  statusLabel(status: OrderStatus): string {
+    return STATUS_LABELS[status];
+  }
+
+  paymentMethodLabel(method: PaymentMethod): string {
+    return PAYMENT_METHOD_LABELS[method];
+  }
+
+  addressSummary(order: Order): string {
+    return [order.district, order.city].filter(Boolean).join(', ') || '—';
   }
 }

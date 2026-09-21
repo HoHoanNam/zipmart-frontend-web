@@ -17,12 +17,14 @@
           <th class="px-4 py-3">Mã đơn</th>
           <th class="px-4 py-3">Ngày đặt</th>
           <th class="px-4 py-3">Trạng thái</th>
+          <th class="px-4 py-3">Thanh toán</th>
+          <th class="px-4 py-3">Địa chỉ</th>
           <th class="px-4 py-3 text-right">Tổng tiền</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-slate-100">
         @for (order of orders(); track order.id) {
-          <tr>
+          <tr [routerLink]="['/orders', order.id]" class="cursor-pointer hover:bg-slate-50">
             <td class="px-4 py-3 font-mono text-xs text-slate-500">{{ order.id.slice(0, 8) }}</td>
             <td class="px-4 py-3">{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
             <td class="px-4 py-3">
@@ -30,6 +32,8 @@
                 {{ statusLabel(order.status) }}
               </span>
             </td>
+            <td class="px-4 py-3 text-slate-600">{{ paymentMethodLabel(order.paymentMethod) }}</td>
+            <td class="px-4 py-3 text-slate-600">{{ addressSummary(order) }}</td>
             <td class="px-4 py-3 text-right font-semibold text-slate-900">{{ order.total | vndCurrency }}</td>
           </tr>
         }

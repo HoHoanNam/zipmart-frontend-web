@@ -70,13 +70,91 @@
         <span class="text-caption uppercase tracking-wide text-neutral-600">{{ product.brand }}</span>
       }
       <h1 class="mt-1 text-headline-1 text-neutral-900">{{ product.name }}</h1>
+
+      <app-rating-summary [summary]="reviewSummary()" />
+
       <p class="mt-2 text-price-lg text-brand">{{ product.price | vndCurrency }}</p>
-      <p class="mt-1 text-body-regular text-neutral-600">
+
+      <!-- Shipping policy — static v1 rule, see product-detail.ts FREE_SHIPPING_THRESHOLD_VND -->
+      <div class="mt-4 flex items-start gap-2 rounded-card border border-neutral-100 bg-neutral-50 p-3">
+        <span class="material-symbols-outlined text-[20px] text-brand">local_shipping</span>
+        <div class="text-body-regular text-neutral-900">
+          @if (isFreeShipping()) {
+            <p class="text-body-medium text-success">Miễn phí vận chuyển</p>
+            <p class="text-caption text-neutral-600">Áp dụng cho đơn hàng từ {{ freeShippingThreshold | vndCurrency }}.</p>
+          } @else {
+            <p class="text-body-medium">Phí vận chuyển tiêu chuẩn</p>
+            <p class="text-caption text-neutral-600">
+              Miễn phí vận chuyển cho đơn hàng từ {{ freeShippingThreshold | vndCurrency }}.
+            </p>
+          }
+        </div>
+      </div>
+
+      <!-- Warranty — only shown when the product declares warrantyMonths -->
+      @if (product.attributes['warrantyMonths']) {
+        <div class="mt-2 flex items-center gap-2 rounded-card border border-neutral-100 bg-neutral-50 p-3">
+          <span class="material-symbols-outlined text-[20px] text-brand">verified_user</span>
+          <p class="text-body-regular text-neutral-900">
+            Bảo hành {{ product.attributes['warrantyMonths'] }} tháng
+          </p>
+        </div>
+      }
+
+      <p class="mt-4 text-body-regular text-neutral-600">
         {{ product.stock > 0 ? 'Còn ' + product.stock + ' sản phẩm' : 'Hết hàng' }}
       </p>
 
       @if (product.description) {
-        <p class="mt-4 text-body-regular text-neutral-600">{{ product.description }}</p>
+        <p class="mt-2 text-body-regular text-neutral-600">{{ product.description }}</p>
+      }
+
+      <!-- Color tiles -->
+      @if (colorTiles().length > 0) {
+        <div class="mt-6">
+          <span class="mb-2 block text-caption-bold uppercase tracking-wider text-neutral-600">Màu sắc</span>
+          <div class="flex flex-wrap gap-2">
+            @for (tile of colorTiles(); track tile.name) {
+              <button
+                type="button"
+                (click)="selectColor(tile.name)"
+                [title]="tile.name"
+                class="flex flex-col items-center gap-1"
+              >
+                <span
+                  class="h-14 w-14 overflow-hidden rounded-control border-2 border-transparent bg-neutral-50 transition-colors hover:border-brand"
+                >
+                  @if (tile.imageUrl) {
+                    <img [src]="tile.imageUrl" [alt]="tile.name" class="h-full w-full object-cover" />
+                  }
+                </span>
+                <span class="text-caption text-neutral-600">{{ tile.name }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Size chips — always show the fixed 6-size set; unavailable sizes render disabled, not hidden -->
+      @if (product.attributes['sizes']) {
+        <div class="mt-4">
+          <span class="mb-2 block text-caption-bold uppercase tracking-wider text-neutral-600">Kích cỡ</span>
+          <div class="flex flex-wrap gap-2">
+            @for (chip of sizeChips(); track chip.size) {
+              <span
+                class="flex h-9 min-w-9 items-center justify-center rounded-control border px-3 text-body-medium"
+                [class.border-brand]="chip.available"
+                [class.text-neutral-900]="chip.available"
+                [class.cursor-default]="chip.available"
+                [class.border-neutral-100]="!chip.available"
+                [class.text-neutral-300]="!chip.available"
+                [class.cursor-not-allowed]="!chip.available"
+              >
+                {{ chip.size }}
+              </span>
+            }
+          </div>
+        </div>
       }
 
       @if (attributeRows().length > 0) {
@@ -116,6 +194,36 @@
       <app-rec-widget />
     </div>
   }
+
+  <!-- Reviews -->
+  <div class="mt-12">
+    <h2 class="mb-4 text-headline-2 text-neutral-900">Đánh giá sản phẩm</h2>
+
+    <div class="mb-6">
+      @if (authService.isAuthenticated()) {
+        <app-review-form
+          [editingReview]="editingReview()"
+          [error]="reviewError()"
+          [resetToken]="reviewFormResetToken()"
+          (submitReview)="onSubmitReview($event)"
+          (cancel)="onCancelEditReview()"
+        />
+      } @else {
+        <div class="rounded-card border border-dashed border-neutral-300 p-6 text-center">
+          <p class="text-body-regular text-neutral-600">
+            <a routerLink="/login" class="font-medium text-brand hover:underline">Đăng nhập</a>
+            để viết đánh giá cho sản phẩm này.
+          </p>
+        </div>
+      }
+    </div>
+
+    <app-review-list
+      [reviews]="reviews()"
+      (edit)="onEditReview($event)"
+      (delete)="onDeleteReview($event)"
+    />
+  </div>
 } @else {
   <p class="text-body-regular text-neutral-600">Không tìm thấy sản phẩm.</p>
 }

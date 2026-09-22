@@ -23,7 +23,11 @@
     </div>
   </section>
 
-  <!-- Filter / tab bar — static, no categories API yet; see DESIGN.md notes -->
+  <!-- Category browsing grid — see docs/PROJECT-CATALOG-UI-REVIEW-EXPANSION.md Phần 2.2 -->
+  <app-category-grid />
+
+  <!-- Filter / tab bar — kept alongside the grid above: this doubles as the
+       recommendation-mode filter, a different purpose from category browsing -->
   <div class="flex flex-wrap items-center justify-between gap-4">
     <div class="flex items-center gap-1 overflow-x-auto pb-1">
       <button type="button" class="flex items-center gap-1.5 rounded-control bg-brand px-4 py-2 text-body-medium text-white shadow-card">

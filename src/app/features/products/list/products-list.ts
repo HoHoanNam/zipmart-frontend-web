@@ -33,7 +33,7 @@ export class ProductsList {
   categoryId: string | null = null;
 
   constructor() {
-    // Subscribe, not `route.snapshot` — ShellWithSidebar keeps ProductsList's
+    // Subscribe, not `route.snapshot` — ShellSimple keeps ProductsList's
     // component instance alive across `/products?categoryId=X` ->
     // `/products?categoryId=Y` navigations (same route, only query params
     // change), so the constructor doesn't re-run and a one-time snapshot

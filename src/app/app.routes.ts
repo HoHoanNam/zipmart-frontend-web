@@ -5,7 +5,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./layout/shell-with-sidebar/shell-with-sidebar').then((m) => m.ShellWithSidebar),
+      import('./layout/shell-simple/shell-simple').then((m) => m.ShellSimple),
     children: [
       {
         path: '',
@@ -16,13 +16,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/products/list/products-list').then((m) => m.ProductsList),
       },
-    ],
-  },
-  {
-    path: '',
-    loadComponent: () =>
-      import('./layout/shell-simple/shell-simple').then((m) => m.ShellSimple),
-    children: [
       {
         path: 'login',
         loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),

@@ -4,9 +4,10 @@ import { Footer } from '../../shared/components/footer/footer';
 import { Navbar } from '../../shared/components/navbar/navbar';
 
 /**
- * Shell for single-focus pages (auth, cart, checkout, order history, product
- * detail) that shouldn't compete with a sidebar for attention — see
- * DESIGN.md layout notes.
+ * Single shared shell for every top-level page (Home, Products, product
+ * detail, auth, cart, checkout, order history). The sidebar-based shell was
+ * removed — see docs/PROJECT-CATALOG-UI-REVIEW-EXPANSION.md Phần 2.1 — so
+ * this is now the only shell in the app.
  */
 @Component({
   selector: 'app-shell-simple',

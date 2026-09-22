@@ -3,12 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import type { Category } from '../../core/models/category.model';
+import { CategoryGrid } from '../../shared/components/category-grid/category-grid';
 import { CategoriesService } from '../categories/categories.service';
 import { RecWidget } from '../recommendations/rec-widget/rec-widget';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, FormsModule, RecWidget],
+  imports: [RouterLink, FormsModule, RecWidget, CategoryGrid],
   templateUrl: './home.html',
 })
 export class Home {

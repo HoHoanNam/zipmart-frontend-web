@@ -41,6 +41,12 @@ export const routes: Routes = [
           import('./features/wishlist/wishlist-page').then((m) => m.WishlistPage),
       },
       {
+        path: 'profile',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/profile/profile-page').then((m) => m.ProfilePage),
+      },
+      {
         path: 'checkout',
         canActivate: [authGuard],
         loadComponent: () =>

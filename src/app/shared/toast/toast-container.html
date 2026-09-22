@@ -39,6 +39,22 @@
           </button>
         </div>
       }
+      @case ('profile') {
+        <div
+          class="animate-toast-slide-up pointer-events-auto flex items-center gap-3 rounded-control border border-neutral-200 bg-white px-4 py-3 text-body-medium text-neutral-900 shadow-hover"
+        >
+          <span class="material-symbols-outlined text-[20px] text-brand">check_circle</span>
+          <span>{{ toast.message }}</span>
+          <button
+            type="button"
+            aria-label="Đóng thông báo"
+            (click)="toastService.dismiss(toast.id)"
+            class="ml-1 text-neutral-400 hover:text-neutral-600"
+          >
+            ✕
+          </button>
+        </div>
+      }
     }
   }
 </div>

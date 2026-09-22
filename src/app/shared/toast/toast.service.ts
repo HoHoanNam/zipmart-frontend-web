@@ -21,6 +21,14 @@ export class ToastService {
     this.push('wishlist', `Đã xoá "${productName}" khỏi yêu thích`);
   }
 
+  showProfileUpdated(): void {
+    this.push('profile', 'Đã cập nhật thông tin cá nhân');
+  }
+
+  showPasswordChanged(): void {
+    this.push('profile', 'Đã đổi mật khẩu thành công');
+  }
+
   dismiss(id: number): void {
     this.toastsSignal.update((list) => list.filter((t) => t.id !== id));
   }

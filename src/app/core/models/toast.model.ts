@@ -1,4 +1,4 @@
-export type ToastVariant = 'cart' | 'wishlist';
+export type ToastVariant = 'cart' | 'wishlist' | 'profile';
 
 export interface Toast {
   id: number;

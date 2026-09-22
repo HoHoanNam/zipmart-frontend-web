@@ -11,15 +11,15 @@
   </div>
 
   @if (loading()) {
-    <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 xl:grid-cols-4">
-      @for (i of [1, 2, 3, 4]; track i) {
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
         <div class="h-64 animate-pulse rounded-card bg-neutral-100"></div>
       }
     </div>
   } @else if (recommendations().length === 0) {
     <p class="text-body-regular text-neutral-600">Chưa có sản phẩm để gợi ý.</p>
   } @else {
-    <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 xl:grid-cols-4">
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       @for (rec of recommendations(); track rec.productId) {
         <app-product-card
           [product]="rec.product"

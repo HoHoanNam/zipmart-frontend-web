@@ -1,0 +1,14 @@
+<p class="mb-4 text-caption text-neutral-600">
+  @for (item of items(); track $index; let last = $last) {
+    @if (item.routerLink && !last) {
+      <a [routerLink]="item.routerLink" [queryParams]="item.queryParams" class="hover:text-neutral-900 hover:underline">
+        {{ item.label }}
+      </a>
+    } @else {
+      <span [class.text-neutral-900]="last">{{ item.label }}</span>
+    }
+    @if (!last) {
+      <span class="mx-1">/</span>
+    }
+  }
+</p>

@@ -13,6 +13,7 @@ import { ReviewsService } from '../../reviews/reviews.service';
 import { ToastService } from '../../../shared/toast/toast.service';
 import { CategoriesService } from '../../categories/categories.service';
 import { ProductsService } from '../products.service';
+import { Breadcrumb } from '../../../shared/components/breadcrumb/breadcrumb';
 import { RatingSummary } from './rating-summary';
 import { ReviewForm } from './review-form';
 import { ReviewList } from './review-list';
@@ -109,7 +110,7 @@ function formatAttributes(
 
 @Component({
   selector: 'app-product-detail',
-  imports: [RouterLink, RecWidget, VndCurrencyPipe, RatingSummary, ReviewList, ReviewForm],
+  imports: [RouterLink, RecWidget, VndCurrencyPipe, RatingSummary, ReviewList, ReviewForm, Breadcrumb],
   templateUrl: './product-detail.html',
 })
 export class ProductDetail {
@@ -124,6 +125,22 @@ export class ProductDetail {
 
   readonly product = signal<Product | null>(null);
   readonly category = signal<Category | null>(null);
+
+  readonly breadcrumbItems = computed(() => {
+    const items: { label: string; routerLink?: string | unknown[]; queryParams?: Record<string, string> }[] = [
+      { label: 'Trang chủ', routerLink: '/' },
+      { label: 'Sản phẩm', routerLink: '/products' },
+    ];
+    const cat = this.category();
+    if (cat) {
+      items.push({ label: cat.name, routerLink: '/products', queryParams: { categoryId: cat.id } });
+    }
+    const product = this.product();
+    if (product) {
+      items.push({ label: product.name });
+    }
+    return items;
+  });
   readonly loading = signal(true);
   readonly quantity = signal(1);
   readonly activeImageIndex = signal(0);
@@ -164,6 +181,52 @@ export class ProductDetail {
     return product ? Number(product.price) >= FREE_SHIPPING_THRESHOLD_VND : false;
   });
 
+  // Real per-size/color price+stock — coexists with the cosmetic-only
+  // colorTiles/sizeChips above (old apparel products, no per-variant
+  // stock). Only products created with variants set this to a non-empty
+  // array; everything else behaves exactly as before.
+  readonly hasVariants = computed(() => (this.product()?.variants?.length ?? 0) > 0);
+
+  readonly variantSizes = computed(() => {
+    const sizes = (this.product()?.variants ?? []).map((v) => v.size).filter((s): s is string => !!s);
+    return [...new Set(sizes)];
+  });
+
+  readonly variantColors = computed(() => {
+    const colors = (this.product()?.variants ?? []).map((v) => v.color).filter((c): c is string => !!c);
+    return [...new Set(colors)];
+  });
+
+  readonly selectedSize = signal<string | null>(null);
+  readonly selectedColor = signal<string | null>(null);
+
+  readonly selectedVariant = computed(() => {
+    const variants = this.product()?.variants ?? [];
+    return (
+      variants.find((v) => v.size === this.selectedSize() && v.color === this.selectedColor()) ?? null
+    );
+  });
+
+  readonly displayPrice = computed(() => this.selectedVariant()?.price ?? this.product()?.price ?? '0');
+
+  readonly displayStock = computed(() => {
+    if (!this.hasVariants()) return this.product()?.stock ?? 0;
+    return this.selectedVariant()?.stock ?? 0;
+  });
+
+  readonly canAddToCart = computed(() => {
+    if (!this.hasVariants()) return (this.product()?.stock ?? 0) > 0;
+    return (this.selectedVariant()?.stock ?? 0) > 0;
+  });
+
+  selectSize(size: string): void {
+    this.selectedSize.set(size);
+  }
+
+  selectVariantColor(color: string): void {
+    this.selectedColor.set(color);
+  }
+
   constructor() {
     // Subscribe, not `route.snapshot` — ShellSimple keeps this component
     // instance alive across `/products/:id1` -> `/products/:id2` navigations
@@ -190,6 +253,8 @@ export class ProductDetail {
       this.reviews.set(reviews);
       this.reviewSummary.set(summary);
       this.activeImageIndex.set(0);
+      this.selectedSize.set(null);
+      this.selectedColor.set(null);
       this.tracking.track(id, 'view');
 
       if (product.categoryId) {
@@ -228,9 +293,10 @@ export class ProductDetail {
 
   async onAddToCart(): Promise<void> {
     const product = this.product();
-    if (!product) return;
+    if (!product || !this.canAddToCart()) return;
 
-    await this.cartService.addItem(product.id, this.quantity());
+    const variantId = this.hasVariants() ? this.selectedVariant()?.id : undefined;
+    await this.cartService.addItem(product.id, this.quantity(), variantId);
     this.tracking.track(product.id, 'add_to_cart');
     this.toastService.showCartAdded(product.name);
   }

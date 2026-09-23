@@ -1,13 +1,7 @@
 @if (loading()) {
   <div class="h-96 animate-pulse rounded-card bg-neutral-100"></div>
 } @else if (product(); as product) {
-  @if (category(); as cat) {
-    <p class="mb-4 text-caption text-neutral-600">
-      <span>Sản phẩm</span>
-      <span class="mx-1">/</span>
-      <span class="text-neutral-900">{{ cat.name }}</span>
-    </p>
-  }
+  <app-breadcrumb [items]="breadcrumbItems()" />
 
   <div class="grid gap-8 md:grid-cols-2">
     <div class="flex flex-col gap-3">
@@ -73,7 +67,7 @@
 
       <app-rating-summary [summary]="reviewSummary()" />
 
-      <p class="mt-2 text-price-lg text-brand">{{ product.price | vndCurrency }}</p>
+      <p class="mt-2 text-price-lg text-brand">{{ displayPrice() | vndCurrency }}</p>
 
       <!-- Shipping policy — static v1 rule, see product-detail.ts FREE_SHIPPING_THRESHOLD_VND -->
       <div class="mt-4 flex items-start gap-2 rounded-card border border-neutral-100 bg-neutral-50 p-3">
@@ -102,11 +96,59 @@
       }
 
       <p class="mt-4 text-body-regular text-neutral-600">
-        {{ product.stock > 0 ? 'Còn ' + product.stock + ' sản phẩm' : 'Hết hàng' }}
+        @if (hasVariants()) {
+          {{ selectedVariant() ? (displayStock() > 0 ? 'Còn ' + displayStock() + ' sản phẩm' : 'Hết hàng') : 'Chọn phân loại để xem tồn kho' }}
+        } @else {
+          {{ product.stock > 0 ? 'Còn ' + product.stock + ' sản phẩm' : 'Hết hàng' }}
+        }
       </p>
 
       @if (product.description) {
         <p class="mt-2 text-body-regular text-neutral-600">{{ product.description }}</p>
+      }
+
+      <!-- Real variant selector — size/color are pickable, price/stock update live -->
+      @if (hasVariants()) {
+        @if (variantColors().length > 0) {
+          <div class="mt-6">
+            <span class="mb-2 block text-caption-bold uppercase tracking-wider text-neutral-600">Màu sắc</span>
+            <div class="flex flex-wrap gap-2">
+              @for (color of variantColors(); track color) {
+                <button
+                  type="button"
+                  (click)="selectVariantColor(color)"
+                  class="rounded-control border px-3 py-2 text-body-medium"
+                  [class.border-brand]="selectedColor() === color"
+                  [class.text-brand]="selectedColor() === color"
+                  [class.border-neutral-300]="selectedColor() !== color"
+                  [class.text-neutral-900]="selectedColor() !== color"
+                >
+                  {{ color }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+        @if (variantSizes().length > 0) {
+          <div class="mt-4">
+            <span class="mb-2 block text-caption-bold uppercase tracking-wider text-neutral-600">Kích cỡ</span>
+            <div class="flex flex-wrap gap-2">
+              @for (size of variantSizes(); track size) {
+                <button
+                  type="button"
+                  (click)="selectSize(size)"
+                  class="flex h-9 min-w-9 items-center justify-center rounded-control border px-3 text-body-medium"
+                  [class.border-brand]="selectedSize() === size"
+                  [class.text-brand]="selectedSize() === size"
+                  [class.border-neutral-300]="selectedSize() !== size"
+                  [class.text-neutral-900]="selectedSize() !== size"
+                >
+                  {{ size }}
+                </button>
+              }
+            </div>
+          </div>
+        }
       }
 
       <!-- Color tiles -->
@@ -172,18 +214,18 @@
         <input
           type="number"
           min="1"
-          [max]="product.stock"
+          [max]="displayStock()"
           [value]="quantity()"
           (change)="quantity.set(+($any($event.target).value))"
           class="w-20 rounded-control border border-neutral-300 px-3 py-2 text-body-regular"
         />
         <button
           type="button"
-          [disabled]="product.stock === 0"
+          [disabled]="!canAddToCart()"
           (click)="onAddToCart()"
           class="rounded-control bg-brand px-5 py-2 text-body-medium text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:bg-neutral-300"
         >
-          Thêm vào giỏ
+          {{ hasVariants() && !selectedVariant() ? 'Chọn phân loại' : 'Thêm vào giỏ' }}
         </button>
       </div>
     </div>

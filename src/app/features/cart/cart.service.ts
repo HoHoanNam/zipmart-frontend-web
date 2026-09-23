@@ -44,9 +44,13 @@ export class CartService {
     this.itemsSignal.set(items);
   }
 
-  async addItem(productId: string, quantity: number): Promise<void> {
+  async addItem(productId: string, quantity: number, variantId?: string | null): Promise<void> {
     await firstValueFrom(
-      this.http.post<CartItem>(`${environment.apiUrl}/cart/items`, { productId, quantity }),
+      this.http.post<CartItem>(`${environment.apiUrl}/cart/items`, {
+        productId,
+        quantity,
+        variantId: variantId ?? undefined,
+      }),
     );
     await this.load();
   }

@@ -5,10 +5,11 @@ import type { Product } from '../../../core/models/product.model';
 import { ToastService } from '../../toast/toast.service';
 import { WishlistService } from '../../../features/wishlist/wishlist.service';
 import { VndCurrencyPipe } from '../../pipes/vnd-currency.pipe';
+import { StarRating } from '../star-rating/star-rating';
 
 @Component({
   selector: 'app-product-card',
-  imports: [RouterLink, VndCurrencyPipe, DecimalPipe],
+  imports: [RouterLink, VndCurrencyPipe, DecimalPipe, StarRating],
   templateUrl: './product-card.html',
 })
 export class ProductCard {
@@ -23,6 +24,19 @@ export class ProductCard {
   readonly addToCart = output<string>();
 
   readonly wishlisted = computed(() => this.wishlistService.isWishlisted(this.product().id));
+
+  readonly hasDiscount = computed(() => {
+    const original = this.product().originalPrice;
+    return original !== null && Number(original) > Number(this.product().price);
+  });
+
+  readonly discountPercent = computed(() => {
+    const product = this.product();
+    if (!product.originalPrice) return 0;
+    const original = Number(product.originalPrice);
+    const current = Number(product.price);
+    return Math.round((1 - current / original) * 100);
+  });
 
   onAddToCart(event: Event): void {
     event.preventDefault();

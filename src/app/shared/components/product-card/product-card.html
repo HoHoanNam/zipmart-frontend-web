@@ -31,6 +31,11 @@
           Khớp {{ score * 100 | number: '1.0-0' }}%
         </span>
       }
+      @if (hasDiscount()) {
+        <span class="inline-flex items-center rounded-badge bg-danger px-2 py-0.5 text-[11px] font-semibold text-white">
+          -{{ discountPercent() }}%
+        </span>
+      }
     </div>
 
     <button
@@ -59,9 +64,26 @@
     {{ product().name }}
   </h3>
 
+  @if (product().reviewCount) {
+    <div class="mt-1 flex items-center gap-1.5">
+      <app-star-rating [average]="product().averageRating ?? 0" size="sm" />
+      <span class="text-caption text-neutral-600">({{ product().reviewCount }})</span>
+    </div>
+  }
+  @if (product().soldCount) {
+    <p class="mt-0.5 text-caption text-neutral-600">Đã bán {{ product().soldCount }}</p>
+  }
+
   <div class="mt-auto">
     <div class="mt-1 flex items-center justify-between">
-      <span class="text-price-lg text-neutral-900">{{ product().price | vndCurrency }}</span>
+      <div class="flex flex-col">
+        @if (hasDiscount()) {
+          <span class="text-caption text-neutral-600 line-through">
+            {{ product().originalPrice! | vndCurrency }}
+          </span>
+        }
+        <span class="text-price-lg text-neutral-900">{{ product().price | vndCurrency }}</span>
+      </div>
       <span
         class="inline-flex items-center gap-1.5 rounded-badge bg-neutral-50 px-1.5 py-0.5 text-caption text-neutral-600"
       >

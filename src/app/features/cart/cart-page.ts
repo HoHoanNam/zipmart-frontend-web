@@ -12,6 +12,9 @@ import { CouponsService } from './coupons.service';
 interface CartRow {
   itemId: string;
   product: Product;
+  variantId: string | null;
+  variantLabel: string | null;
+  unitPrice: number;
   quantity: number;
   lineTotal: number;
 }
@@ -52,11 +55,17 @@ export class CartPage {
       const rows = await Promise.all(
         items.map(async (item) => {
           const product = await this.productsService.findOne(item.productId);
+          const variant = product.variants?.find((v) => v.id === item.variantId);
+          const unitPrice = Number(variant?.price ?? product.price);
+          const variantLabel = variant ? [variant.size, variant.color].filter(Boolean).join(' / ') : null;
           return {
             itemId: item.id,
             product,
+            variantId: item.variantId,
+            variantLabel,
+            unitPrice,
             quantity: item.quantity,
-            lineTotal: Number(product.price) * item.quantity,
+            lineTotal: unitPrice * item.quantity,
           };
         }),
       );
@@ -68,8 +77,22 @@ export class CartPage {
 
   async updateQuantity(itemId: string, quantity: number): Promise<void> {
     if (quantity < 1) return;
-    await this.cartService.updateItem(itemId, quantity);
-    await this.load();
+
+    // Cập nhật lạc quan tại chỗ — KHÔNG gọi lại this.load(), vì load() gọi
+    // productsService.findOne() cho TỪNG dòng trong giỏ (N+1), rất lag khi
+    // giỏ có nhiều sản phẩm dù chỉ đổi số lượng của 1 dòng (giá không đổi
+    // theo số lượng nên không cần fetch lại product/variant).
+    const previousRows = this.rows();
+    this.rows.update((rows) =>
+      rows.map((row) =>
+        row.itemId === itemId ? { ...row, quantity, lineTotal: row.unitPrice * quantity } : row,
+      ),
+    );
+    try {
+      await this.cartService.updateItem(itemId, quantity);
+    } catch {
+      this.rows.set(previousRows); // rollback nếu server từ chối (vd vượt tồn kho)
+    }
   }
 
   async removeItem(itemId: string): Promise<void> {

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import type { Order, OrderStatus } from '../../core/models/order.model';
 import type { UserProfile } from '../../core/models/user.model';
+import { AddressList } from '../addresses/address-list';
 import { VndCurrencyPipe } from '../../shared/pipes/vnd-currency.pipe';
 import { ToastService } from '../../shared/toast/toast.service';
 import { OrdersService } from '../orders/orders.service';
@@ -27,7 +28,7 @@ const RECENT_ORDERS_LIMIT = 5;
 
 @Component({
   selector: 'app-profile-page',
-  imports: [FormsModule, RouterLink, DatePipe, VndCurrencyPipe],
+  imports: [FormsModule, RouterLink, DatePipe, VndCurrencyPipe, AddressList],
   templateUrl: './profile-page.html',
 })
 export class ProfilePage {

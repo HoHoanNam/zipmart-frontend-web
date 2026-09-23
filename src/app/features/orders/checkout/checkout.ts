@@ -2,10 +2,12 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { VAT_RATE } from '../../../core/constants/order.constants';
+import type { Address } from '../../../core/models/address.model';
 import type { PaymentMethod } from '../../../core/models/order.model';
 import type { Product } from '../../../core/models/product.model';
 import { BehaviorTrackingService } from '../../../core/tracking/behavior-tracking.service';
 import { VndCurrencyPipe } from '../../../shared/pipes/vnd-currency.pipe';
+import { AddressesService } from '../../addresses/addresses.service';
 import { CartService } from '../../cart/cart.service';
 import { ProductsService } from '../../products/products.service';
 import { OrdersService } from '../orders.service';
@@ -19,6 +21,7 @@ export class Checkout {
   readonly cartService = inject(CartService);
   private readonly productsService = inject(ProductsService);
   private readonly ordersService = inject(OrdersService);
+  private readonly addressesService = inject(AddressesService);
   private readonly tracking = inject(BehaviorTrackingService);
   private readonly router = inject(Router);
 
@@ -29,6 +32,10 @@ export class Checkout {
   ward = '';
   streetAddress = '';
   paymentMethod: PaymentMethod = 'cod';
+
+  readonly savedAddresses = signal<Address[]>([]);
+  selectedAddressId: string | 'new' = 'new';
+  saveNewAddress = false;
 
   readonly placing = signal(false);
   readonly error = signal<string | null>(null);
@@ -47,6 +54,7 @@ export class Checkout {
 
   constructor() {
     void this.loadSummary();
+    void this.loadAddresses();
   }
 
   private async loadSummary(): Promise<void> {
@@ -66,6 +74,28 @@ export class Checkout {
     }
   }
 
+  private async loadAddresses(): Promise<void> {
+    const addresses = await this.addressesService.findAll();
+    this.savedAddresses.set(addresses);
+    const defaultAddress = addresses.find((a) => a.isDefault) ?? addresses[0];
+    if (defaultAddress) {
+      this.onSelectAddress(defaultAddress.id);
+    }
+  }
+
+  onSelectAddress(id: string | 'new'): void {
+    this.selectedAddressId = id;
+    if (id === 'new') return;
+    const address = this.savedAddresses().find((a) => a.id === id);
+    if (!address) return;
+    this.recipientName = address.recipientName;
+    this.phoneNumber = address.phoneNumber;
+    this.city = address.city;
+    this.district = address.district;
+    this.ward = address.ward;
+    this.streetAddress = address.streetAddress;
+  }
+
   async confirmOrder(): Promise<void> {
     this.placing.set(true);
     this.error.set(null);
@@ -83,6 +113,16 @@ export class Checkout {
       });
       for (const item of cartItems) {
         this.tracking.track(item.productId, 'purchase');
+      }
+      if (this.saveNewAddress && this.selectedAddressId === 'new') {
+        await this.addressesService.create({
+          recipientName: this.recipientName,
+          phoneNumber: this.phoneNumber,
+          city: this.city,
+          district: this.district,
+          ward: this.ward,
+          streetAddress: this.streetAddress,
+        });
       }
       await this.cartService.load();
       this.cartService.clearCoupon();

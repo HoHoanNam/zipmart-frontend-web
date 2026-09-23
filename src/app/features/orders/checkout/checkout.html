@@ -11,6 +11,49 @@
         với trạng thái <span class="font-medium text-neutral-900">pending</span>.
       </p>
 
+      @if (savedAddresses().length > 0) {
+        <div>
+          <label class="mb-1 block text-body-regular font-medium text-neutral-700">Địa chỉ giao hàng</label>
+          <div class="space-y-2">
+            @for (address of savedAddresses(); track address.id) {
+              <label
+                class="flex cursor-pointer items-start gap-2 rounded-control border p-3 text-body-regular"
+                [class.border-brand]="selectedAddressId === address.id"
+                [class.border-neutral-300]="selectedAddressId !== address.id"
+              >
+                <input
+                  type="radio"
+                  name="savedAddress"
+                  class="mt-1"
+                  [checked]="selectedAddressId === address.id"
+                  (change)="onSelectAddress(address.id)"
+                />
+                <span>
+                  <span class="text-neutral-900">{{ address.recipientName }} — {{ address.phoneNumber }}</span>
+                  <br />
+                  <span class="text-neutral-600">
+                    {{ address.streetAddress }}, {{ address.ward }}, {{ address.district }}, {{ address.city }}
+                  </span>
+                </span>
+              </label>
+            }
+            <label
+              class="flex cursor-pointer items-center gap-2 rounded-control border p-3 text-body-regular"
+              [class.border-brand]="selectedAddressId === 'new'"
+              [class.border-neutral-300]="selectedAddressId !== 'new'"
+            >
+              <input
+                type="radio"
+                name="savedAddress"
+                [checked]="selectedAddressId === 'new'"
+                (change)="onSelectAddress('new')"
+              />
+              <span class="text-neutral-900">+ Địa chỉ mới</span>
+            </label>
+          </div>
+        </div>
+      }
+
       <div>
         <label class="mb-1 block text-body-regular font-medium text-neutral-700"
           >Họ tên người nhận</label
@@ -101,6 +144,13 @@
           <option value="credit">Thẻ tín dụng (Credit)</option>
         </select>
       </div>
+
+      @if (selectedAddressId === 'new') {
+        <label class="flex items-center gap-2 text-body-regular text-neutral-700">
+          <input type="checkbox" [(ngModel)]="saveNewAddress" name="saveNewAddress" />
+          Lưu địa chỉ này cho lần sau
+        </label>
+      }
 
       @if (error()) {
         <p class="text-body-regular text-danger">{{ error() }}</p>

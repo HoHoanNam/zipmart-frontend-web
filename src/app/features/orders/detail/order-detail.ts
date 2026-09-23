@@ -8,6 +8,7 @@ import type {
   PaymentMethod,
   UpdateOrderAddressPayload,
 } from '../../../core/models/order.model';
+import { OrderTimeline } from '../../../shared/components/order-timeline/order-timeline';
 import { VndCurrencyPipe } from '../../../shared/pipes/vnd-currency.pipe';
 import { OrdersService } from '../orders.service';
 
@@ -26,7 +27,7 @@ const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
 
 @Component({
   selector: 'app-order-detail',
-  imports: [RouterLink, DatePipe, FormsModule, VndCurrencyPipe],
+  imports: [RouterLink, DatePipe, FormsModule, VndCurrencyPipe, OrderTimeline],
   templateUrl: './order-detail.html',
 })
 export class OrderDetail {
@@ -38,6 +39,7 @@ export class OrderDetail {
   readonly editing = signal(false);
   readonly saving = signal(false);
   readonly cancelling = signal(false);
+  readonly receiving = signal(false);
   readonly error = signal<string | null>(null);
 
   editForm: UpdateOrderAddressPayload = {};
@@ -118,6 +120,23 @@ export class OrderDetail {
       this.error.set('Không thể huỷ đơn hàng. Vui lòng thử lại.');
     } finally {
       this.cancelling.set(false);
+    }
+  }
+
+  async markReceived(): Promise<void> {
+    const order = this.order();
+    if (!order) return;
+    if (!confirm('Xác nhận bạn đã nhận được đơn hàng này?')) return;
+
+    this.receiving.set(true);
+    this.error.set(null);
+    try {
+      await this.ordersService.markReceived(order.id);
+      await this.load(order.id);
+    } catch {
+      this.error.set('Không thể xác nhận đơn hàng. Vui lòng thử lại.');
+    } finally {
+      this.receiving.set(false);
     }
   }
 }

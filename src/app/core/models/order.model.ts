@@ -5,6 +5,8 @@ export interface OrderItem {
   id: string;
   orderId: string;
   productId: string;
+  variantId: string | null;
+  variantLabel: string | null;
   productName: string | null;
   productImageUrl: string | null;
   quantity: number;

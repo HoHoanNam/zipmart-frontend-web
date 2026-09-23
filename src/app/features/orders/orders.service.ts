@@ -32,4 +32,8 @@ export class OrdersService {
   cancel(id: string): Promise<Order> {
     return firstValueFrom(this.http.patch<Order>(`${environment.apiUrl}/orders/${id}/cancel`, {}));
   }
+
+  markReceived(id: string): Promise<Order> {
+    return firstValueFrom(this.http.patch<Order>(`${environment.apiUrl}/orders/${id}/received`, {}));
+  }
 }

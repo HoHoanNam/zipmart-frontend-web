@@ -1,27 +1,6 @@
 <div class="flex flex-col gap-8">
-  <!-- Hero -->
-  <section
-    class="relative overflow-hidden rounded-card bg-linear-to-br from-brand-light via-brand to-brand-dark p-8 text-white shadow-hover"
-  >
-    <div class="relative z-10 max-w-2xl">
-      <div class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-2.5 py-1 backdrop-blur-md">
-        <span class="material-symbols-outlined text-[15px]">auto_awesome</span>
-        <span class="text-caption-bold uppercase tracking-wider">Cá nhân hoá trải nghiệm mua sắm</span>
-      </div>
-      <h1 class="mb-2 text-headline-1">Mua sắm thông minh hơn với zipmart</h1>
-      <p class="mb-6 text-body-medium text-white/90">
-        Gợi ý sản phẩm được cá nhân hoá dựa trên hành vi mua sắm của bạn — càng dùng nhiều,
-        gợi ý càng chính xác.
-      </p>
-      <a
-        routerLink="/products"
-        class="inline-flex items-center gap-2 rounded-control bg-white px-5 py-3 text-body-medium text-brand shadow-card transition hover:bg-neutral-50"
-      >
-        <span class="material-symbols-outlined text-[20px]">explore</span>
-        Khám phá sản phẩm
-      </a>
-    </div>
-  </section>
+  <!-- Hero banner carousel -->
+  <app-banner-carousel [slides]="banners()" />
 
   <!-- Category browsing grid — see docs/PROJECT-CATALOG-UI-REVIEW-EXPANSION.md Phần 2.2 -->
   <app-category-grid />
@@ -44,13 +23,25 @@
         </a>
       }
     </div>
-    <div class="flex items-center gap-2">
-      <span class="text-caption text-neutral-600">Sắp xếp:</span>
-      <select disabled title="Sắp ra mắt" class="rounded-control bg-white px-3 py-1.5 text-body-medium text-neutral-300 shadow-card">
-        <option>Độ phù hợp thuật toán (Cao nhất)</option>
-      </select>
-    </div>
   </div>
+
+  <!-- Best sellers -->
+  <section>
+    <h2 class="mb-4 text-headline-2 text-neutral-900">Bán chạy nhất</h2>
+    @if (bestSellersLoading()) {
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+          <div class="h-64 animate-pulse rounded-card bg-neutral-100"></div>
+        }
+      </div>
+    } @else if (bestSellers().length > 0) {
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        @for (product of bestSellers(); track product.id) {
+          <app-product-card [product]="product" (addToCart)="onAddToCart($event)" />
+        }
+      </div>
+    }
+  </section>
 
   <!-- AI recommendations -->
   @if (authService.isAuthenticated()) {

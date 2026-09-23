@@ -4,6 +4,35 @@
       zip<span class="text-brand">mart</span>
     </a>
 
+    <div class="relative shrink-0">
+      <button
+        type="button"
+        (click)="toggleMenu()"
+        class="flex items-center gap-1 rounded-control px-3 py-2 text-body-medium text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900"
+      >
+        <span class="material-symbols-outlined text-[20px]">menu</span>
+        <span class="hidden sm:inline">Danh mục</span>
+      </button>
+
+      @if (menuOpen()) {
+        <div class="fixed inset-0 z-10" (click)="closeMenu()"></div>
+        <div
+          class="absolute left-0 top-full z-20 mt-1 w-56 rounded-card border border-neutral-100 bg-white py-2 shadow-hover"
+        >
+          @for (category of categories(); track category.id) {
+            <a
+              [routerLink]="['/products']"
+              [queryParams]="{ categoryId: category.id }"
+              (click)="closeMenu()"
+              class="block px-4 py-2 text-body-regular text-neutral-900 hover:bg-neutral-100"
+            >
+              {{ category.name }}
+            </a>
+          }
+        </div>
+      }
+    </div>
+
     <div class="mx-4 hidden max-w-120 flex-1 md:block">
       <div class="relative flex items-center">
         <span

@@ -4,8 +4,7 @@ import { authGuard } from './core/auth/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./layout/shell-simple/shell-simple').then((m) => m.ShellSimple),
+    loadComponent: () => import('./layout/shell-simple/shell-simple').then((m) => m.ShellSimple),
     children: [
       {
         path: '',
@@ -35,6 +34,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/cart/cart-page').then((m) => m.CartPage),
       },
       {
+        path: 'compare',
+        loadComponent: () => import('./features/compare/compare-page').then((m) => m.ComparePage),
+      },
+      {
         path: 'wishlist',
         canActivate: [authGuard],
         loadComponent: () =>
@@ -43,14 +46,12 @@ export const routes: Routes = [
       {
         path: 'profile',
         canActivate: [authGuard],
-        loadComponent: () =>
-          import('./features/profile/profile-page').then((m) => m.ProfilePage),
+        loadComponent: () => import('./features/profile/profile-page').then((m) => m.ProfilePage),
       },
       {
         path: 'checkout',
         canActivate: [authGuard],
-        loadComponent: () =>
-          import('./features/orders/checkout/checkout').then((m) => m.Checkout),
+        loadComponent: () => import('./features/orders/checkout/checkout').then((m) => m.Checkout),
       },
       {
         path: 'orders',
@@ -63,6 +64,30 @@ export const routes: Routes = [
         canActivate: [authGuard],
         loadComponent: () =>
           import('./features/orders/detail/order-detail').then((m) => m.OrderDetail),
+      },
+      {
+        path: 'faq',
+        loadComponent: () => import('./features/static-pages/faq-page').then((m) => m.FaqPage),
+      },
+      {
+        path: 'terms',
+        data: { page: 'terms' },
+        loadComponent: () => import('./features/static-pages/static-page').then((m) => m.StaticPage),
+      },
+      {
+        path: 'privacy',
+        data: { page: 'privacy' },
+        loadComponent: () => import('./features/static-pages/static-page').then((m) => m.StaticPage),
+      },
+      {
+        path: 'return-policy',
+        data: { page: 'return-policy' },
+        loadComponent: () => import('./features/static-pages/static-page').then((m) => m.StaticPage),
+      },
+      {
+        path: 'shipping-guide',
+        data: { page: 'shipping-guide' },
+        loadComponent: () => import('./features/static-pages/static-page').then((m) => m.StaticPage),
       },
     ],
   },

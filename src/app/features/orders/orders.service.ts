@@ -6,6 +6,7 @@ import type {
   CreateOrderPayload,
   Order,
   OrderDetail,
+  ShipmentEvent,
   UpdateOrderAddressPayload,
 } from '../../core/models/order.model';
 
@@ -19,6 +20,10 @@ export class OrdersService {
 
   findOne(id: string): Promise<OrderDetail> {
     return firstValueFrom(this.http.get<OrderDetail>(`${environment.apiUrl}/orders/${id}`));
+  }
+
+  findEvents(id: string): Promise<ShipmentEvent[]> {
+    return firstValueFrom(this.http.get<ShipmentEvent[]>(`${environment.apiUrl}/orders/${id}/events`));
   }
 
   checkout(payload: CreateOrderPayload): Promise<Order> {

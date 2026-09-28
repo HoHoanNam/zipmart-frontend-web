@@ -6,6 +6,8 @@ export interface Review {
   authorAvatarUrl: string | null;
   rating: number;
   comment: string;
+  adminReply: string | null;
+  adminReplyAt: string | null;
   createdAt: string;
   updatedAt: string;
 }

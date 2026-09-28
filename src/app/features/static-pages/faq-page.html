@@ -1,0 +1,25 @@
+<h1 class="mb-6 text-headline-2 text-neutral-900">Câu hỏi thường gặp</h1>
+
+<div class="space-y-3">
+  @for (entry of entries; track entry.question; let i = $index) {
+    <div class="overflow-hidden rounded-card border border-neutral-100 bg-white">
+      <button
+        type="button"
+        (click)="toggle(i)"
+        class="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-body-medium font-medium text-neutral-900 hover:bg-neutral-50"
+      >
+        <span>{{ entry.question }}</span>
+        <span
+          class="material-symbols-outlined shrink-0 text-neutral-500 transition-transform"
+          [class.rotate-180]="openIndex() === i"
+          >expand_more</span
+        >
+      </button>
+      @if (openIndex() === i) {
+        <p class="border-t border-neutral-100 px-5 py-4 text-body-regular text-neutral-600">
+          {{ entry.answer }}
+        </p>
+      }
+    </div>
+  }
+</div>

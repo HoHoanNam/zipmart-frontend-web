@@ -29,6 +29,10 @@ export class ToastService {
     this.push('profile', 'Đã đổi mật khẩu thành công');
   }
 
+  showCompareLimitReached(): void {
+    this.push('compare', 'Chỉ so sánh được tối đa 4 sản phẩm');
+  }
+
   dismiss(id: number): void {
     this.toastsSignal.update((list) => list.filter((t) => t.id !== id));
   }

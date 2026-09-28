@@ -19,7 +19,7 @@
   </div>
 
   <div class="mb-6 rounded-card border border-neutral-100 bg-white p-4 shadow-card">
-    <app-order-timeline [status]="order.status" />
+    <app-order-timeline [status]="order.status" [events]="events()" />
     @if (order.status === 'shipped') {
       <div class="mt-4 flex items-center justify-between rounded-control bg-neutral-50 p-3">
         <p class="text-body-regular text-neutral-600">Bạn đã nhận được đơn hàng này chưa?</p>

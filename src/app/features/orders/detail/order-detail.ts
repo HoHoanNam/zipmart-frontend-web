@@ -6,6 +6,7 @@ import type {
   OrderDetail as OrderDetailModel,
   OrderStatus,
   PaymentMethod,
+  ShipmentEvent,
   UpdateOrderAddressPayload,
 } from '../../../core/models/order.model';
 import { OrderTimeline } from '../../../shared/components/order-timeline/order-timeline';
@@ -35,6 +36,7 @@ export class OrderDetail {
   private readonly ordersService = inject(OrdersService);
 
   readonly order = signal<OrderDetailModel | null>(null);
+  readonly events = signal<ShipmentEvent[]>([]);
   readonly loading = signal(true);
   readonly editing = signal(false);
   readonly saving = signal(false);
@@ -54,8 +56,12 @@ export class OrderDetail {
     if (!id) return;
     this.loading.set(true);
     try {
-      const order = await this.ordersService.findOne(id);
+      const [order, events] = await Promise.all([
+        this.ordersService.findOne(id),
+        this.ordersService.findEvents(id),
+      ]);
       this.order.set(order);
+      this.events.set(events);
     } finally {
       this.loading.set(false);
     }

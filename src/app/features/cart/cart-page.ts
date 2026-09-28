@@ -3,6 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { VAT_RATE } from '../../core/constants/order.constants';
+import type { AvailableCoupon } from '../../core/models/coupon.model';
 import type { Product } from '../../core/models/product.model';
 import { VndCurrencyPipe } from '../../shared/pipes/vnd-currency.pipe';
 import { ProductsService } from '../products/products.service';
@@ -42,9 +43,11 @@ export class CartPage {
   readonly couponInput = signal('');
   readonly couponError = signal<string | null>(null);
   readonly applyingCoupon = signal(false);
+  readonly availableCoupons = signal<AvailableCoupon[]>([]);
 
   constructor() {
     void this.load();
+    void this.couponsService.findAvailable().then((coupons) => this.availableCoupons.set(coupons));
   }
 
   private async load(): Promise<void> {
@@ -114,6 +117,11 @@ export class CartPage {
     } finally {
       this.applyingCoupon.set(false);
     }
+  }
+
+  async selectAvailableCoupon(code: string): Promise<void> {
+    this.couponInput.set(code);
+    await this.applyCoupon();
   }
 
   private extractErrorMessage(err: unknown): string {

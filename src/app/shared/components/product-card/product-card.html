@@ -40,6 +40,16 @@
 
     <button
       type="button"
+      aria-label="So sánh sản phẩm"
+      (click)="onToggleCompare($event)"
+      class="absolute right-11 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-neutral-600 backdrop-blur-sm transition-colors hover:bg-white"
+      [class.text-brand]="comparing()"
+    >
+      <span class="material-symbols-outlined text-[18px]">compare_arrows</span>
+    </button>
+
+    <button
+      type="button"
       aria-label="Thêm vào yêu thích"
       (click)="onToggleWishlist($event)"
       class="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-neutral-600 backdrop-blur-sm transition-colors hover:bg-white"

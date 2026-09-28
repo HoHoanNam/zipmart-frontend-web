@@ -89,6 +89,20 @@
         <p class="mt-1 text-caption text-danger">{{ couponError() }}</p>
       }
 
+      @if (availableCoupons().length > 0) {
+        <div class="mt-2 flex flex-wrap gap-1.5">
+          @for (coupon of availableCoupons(); track coupon.id) {
+            <button
+              type="button"
+              (click)="selectAvailableCoupon(coupon.code)"
+              class="rounded-badge border border-brand/30 bg-brand-light/10 px-2 py-0.5 text-caption font-medium text-brand hover:bg-brand-light/20"
+            >
+              {{ coupon.code }} (-{{ coupon.discountPercent }}%)
+            </button>
+          }
+        </div>
+      }
+
       <dl class="mt-4 space-y-2 text-body-regular">
         <div class="flex justify-between">
           <dt class="text-neutral-600">Tạm tính</dt>

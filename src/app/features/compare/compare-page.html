@@ -1,0 +1,127 @@
+<div class="mb-6 flex items-center justify-between">
+  <h1 class="text-headline-2 text-neutral-900">So sánh sản phẩm</h1>
+  @if (products().length > 0) {
+    <button
+      type="button"
+      (click)="clearAll()"
+      class="text-body-medium text-neutral-600 hover:text-danger hover:underline"
+    >
+      Xoá tất cả
+    </button>
+  }
+</div>
+
+@if (loading()) {
+  <div class="h-64 animate-pulse rounded-card bg-neutral-100"></div>
+} @else if (products().length === 0) {
+  <div
+    class="flex flex-col items-center gap-3 rounded-card border border-neutral-100 bg-white py-16 text-center"
+  >
+    <span class="material-symbols-outlined text-[40px] text-neutral-300">compare_arrows</span>
+    <p class="text-body-medium text-neutral-600">
+      Chưa có sản phẩm nào để so sánh — bấm biểu tượng so sánh trên thẻ sản phẩm để thêm.
+    </p>
+    <a routerLink="/products" class="text-body-medium text-brand hover:underline">Xem sản phẩm</a>
+  </div>
+} @else {
+  <div class="overflow-x-auto rounded-card border border-neutral-100 bg-white">
+    <table class="w-full min-w-160 border-collapse text-body-regular">
+      <thead>
+        <tr>
+          <th
+            class="w-40 border-b border-neutral-100 p-4 text-left text-caption text-neutral-600"
+          ></th>
+          @for (product of products(); track product.id) {
+            <th class="min-w-56 border-b border-l border-neutral-100 p-4 align-top">
+              <button
+                type="button"
+                (click)="remove(product.id)"
+                class="mb-2 ml-auto flex items-center gap-1 text-caption text-neutral-500 hover:text-danger"
+              >
+                <span class="material-symbols-outlined text-[16px]">close</span>
+                Bỏ
+              </button>
+              <a [routerLink]="['/products', product.id]" class="block">
+                <div class="mb-2 aspect-square overflow-hidden rounded-control bg-neutral-50">
+                  @if (product.images.length > 0) {
+                    <img
+                      [src]="product.images[0]"
+                      [alt]="product.name"
+                      class="h-full w-full object-cover"
+                    />
+                  }
+                </div>
+                <span
+                  class="line-clamp-2 text-body-medium font-medium text-neutral-900 hover:text-brand"
+                >
+                  {{ product.name }}
+                </span>
+              </a>
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border-b border-neutral-100 p-4 text-caption font-medium text-neutral-600">
+            Giá
+          </td>
+          @for (product of products(); track product.id) {
+            <td class="border-b border-l border-neutral-100 p-4 text-price-lg text-neutral-900">
+              {{ product.price | vndCurrency }}
+            </td>
+          }
+        </tr>
+        <tr>
+          <td class="border-b border-neutral-100 p-4 text-caption font-medium text-neutral-600">
+            Thương hiệu
+          </td>
+          @for (product of products(); track product.id) {
+            <td class="border-b border-l border-neutral-100 p-4">{{ product.brand ?? '—' }}</td>
+          }
+        </tr>
+        <tr>
+          <td class="border-b border-neutral-100 p-4 text-caption font-medium text-neutral-600">
+            Đánh giá
+          </td>
+          @for (product of products(); track product.id) {
+            <td class="border-b border-l border-neutral-100 p-4">
+              @if (product.reviewCount) {
+                <div class="flex items-center gap-1.5">
+                  <app-star-rating [average]="product.averageRating ?? 0" size="sm" />
+                  <span class="text-caption text-neutral-600">({{ product.reviewCount }})</span>
+                </div>
+              } @else {
+                <span class="text-neutral-400">Chưa có đánh giá</span>
+              }
+            </td>
+          }
+        </tr>
+        <tr>
+          <td class="border-b border-neutral-100 p-4 text-caption font-medium text-neutral-600">
+            Tồn kho
+          </td>
+          @for (product of products(); track product.id) {
+            <td class="border-b border-l border-neutral-100 p-4">
+              {{ product.stock > 0 ? 'Còn ' + product.stock : 'Hết hàng' }}
+            </td>
+          }
+        </tr>
+        @for (key of attributeKeys(); track key) {
+          <tr>
+            <td
+              class="border-b border-neutral-100 p-4 text-caption font-medium capitalize text-neutral-600"
+            >
+              {{ key }}
+            </td>
+            @for (product of products(); track product.id) {
+              <td class="border-b border-l border-neutral-100 p-4">
+                {{ attributeValue(product, key) }}
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

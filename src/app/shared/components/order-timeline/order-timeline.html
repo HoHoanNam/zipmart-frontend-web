@@ -41,3 +41,17 @@
     }
   </div>
 }
+
+@if (sortedEvents().length > 0) {
+  <ul class="mt-4 space-y-2 border-t border-neutral-100 pt-4">
+    @for (event of sortedEvents(); track event.id) {
+      <li class="flex items-start gap-2 text-caption text-neutral-600">
+        <span class="mt-0.5 text-neutral-400">{{ event.occurredAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+        <span class="font-medium text-neutral-900">{{ eventLabel(event) }}</span>
+        @if (event.note) {
+          <span>— {{ event.note }}</span>
+        }
+      </li>
+    }
+  </ul>
+}

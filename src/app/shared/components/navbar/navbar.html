@@ -33,7 +33,7 @@
       }
     </div>
 
-    <div class="mx-4 hidden max-w-120 flex-1 md:block">
+    <div class="relative mx-4 hidden max-w-120 flex-1 md:block">
       <div class="relative flex items-center">
         <span
           class="material-symbols-outlined pointer-events-none absolute left-3 text-[20px] text-neutral-600"
@@ -44,13 +44,109 @@
           name="search"
           placeholder="Tìm kiếm sản phẩm..."
           [(ngModel)]="search"
+          (ngModelChange)="onSearchInput()"
           (keyup.enter)="onSearch()"
           class="h-11 w-full rounded-control border border-neutral-300 bg-white pl-10 pr-3 text-body-regular text-neutral-900 placeholder:text-neutral-600 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15"
         />
       </div>
+
+      @if (showSuggestions()) {
+        <div class="fixed inset-0 z-10" (click)="closeSuggestions()"></div>
+        <div
+          class="absolute left-0 top-full z-20 mt-1 w-full rounded-card border border-neutral-100 bg-white py-2 shadow-hover"
+        >
+          @for (item of suggestions(); track item.id) {
+            <button
+              type="button"
+              (click)="selectSuggestion(item.id)"
+              class="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-neutral-100"
+            >
+              @if (item.thumbnail) {
+                <img [src]="item.thumbnail" [alt]="item.name" class="h-8 w-8 rounded-control object-cover" />
+              } @else {
+                <span class="flex h-8 w-8 items-center justify-center rounded-control bg-neutral-100 text-neutral-400">
+                  <span class="material-symbols-outlined text-[16px]">image</span>
+                </span>
+              }
+              <span class="line-clamp-1 text-body-regular text-neutral-900">{{ item.name }}</span>
+            </button>
+          }
+        </div>
+      }
     </div>
 
     <div class="flex items-center gap-2">
+      @if (authService.isAuthenticated()) {
+        <div class="relative">
+          <button
+            type="button"
+            (click)="toggleNotifications()"
+            class="relative flex items-center gap-1 rounded-control px-3 py-2 text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900"
+          >
+            <span class="material-symbols-outlined text-[20px]">notifications</span>
+            @if (notificationsService.unreadCount() > 0) {
+              <span
+                class="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-white"
+              >
+                {{ notificationsService.unreadCount() }}
+              </span>
+            }
+          </button>
+
+          @if (notificationsOpen()) {
+            <div class="fixed inset-0 z-10" (click)="closeNotifications()"></div>
+            <div
+              class="absolute right-0 top-full z-20 mt-1 w-80 rounded-card border border-neutral-100 bg-white py-2 shadow-hover"
+            >
+              <div class="flex items-center justify-between px-4 py-1">
+                <span class="text-caption-bold text-neutral-900">Thông báo</span>
+                @if (notificationsService.unreadCount() > 0) {
+                  <button
+                    type="button"
+                    (click)="markAllNotificationsRead()"
+                    class="text-caption text-brand hover:underline"
+                  >
+                    Đánh dấu tất cả đã đọc
+                  </button>
+                }
+              </div>
+              <div class="max-h-96 overflow-y-auto">
+                @if (notificationsService.notifications().length === 0) {
+                  <p class="px-4 py-6 text-center text-body-regular text-neutral-600">
+                    Chưa có thông báo nào.
+                  </p>
+                } @else {
+                  @for (item of notificationsService.notifications(); track item.id) {
+                    <button
+                      type="button"
+                      (click)="openNotification(item.id, item.isRead)"
+                      class="block w-full px-4 py-2 text-left hover:bg-neutral-100"
+                      [class.bg-brand-light]="!item.isRead"
+                    >
+                      <p class="text-body-regular font-medium text-neutral-900">{{ item.title }}</p>
+                      <p class="mt-0.5 text-caption text-neutral-600">{{ item.body }}</p>
+                    </button>
+                  }
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      @if (compareService.count() > 0) {
+        <a
+          routerLink="/compare"
+          class="relative flex items-center gap-1 rounded-control px-3 py-2 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
+        >
+          <span class="material-symbols-outlined text-[20px]">compare_arrows</span>
+          <span class="hidden text-body-medium sm:inline">So sánh</span>
+          <span class="ml-1 rounded-full bg-danger px-1.5 py-0.5 text-caption-bold text-white">
+            {{ compareService.count() }}
+          </span>
+        </a>
+      }
+
       @if (authService.isAuthenticated()) {
         <a
           routerLink="/wishlist"

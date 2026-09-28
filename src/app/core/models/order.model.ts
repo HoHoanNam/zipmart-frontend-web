@@ -35,6 +35,14 @@ export interface OrderDetail extends Order {
   items: OrderItem[];
 }
 
+export interface ShipmentEvent {
+  id: string;
+  orderId: string;
+  status: OrderStatus;
+  note: string | null;
+  occurredAt: string;
+}
+
 export interface CreateOrderPayload {
   recipientName: string;
   phoneNumber: string;

@@ -4,6 +4,12 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import type { Product, ProductPage, ProductSort } from '../../core/models/product.model';
 
+export interface ProductSuggestion {
+  id: string;
+  name: string;
+  thumbnail: string | null;
+}
+
 export interface FindProductsParams {
   search?: string;
   categoryId?: string;
@@ -42,5 +48,21 @@ export class ProductsService {
 
   findOne(id: string): Promise<Product> {
     return firstValueFrom(this.http.get<Product>(`${environment.apiUrl}/products/${id}`));
+  }
+
+  suggest(q: string): Promise<ProductSuggestion[]> {
+    if (!q.trim()) return Promise.resolve([]);
+    return firstValueFrom(
+      this.http.get<ProductSuggestion[]>(`${environment.apiUrl}/products/suggest`, {
+        params: { q },
+      }),
+    );
+  }
+
+  findManyForCompare(ids: string[]): Promise<Product[]> {
+    if (ids.length === 0) return Promise.resolve([]);
+    return firstValueFrom(
+      this.http.get<Product[]>(`${environment.apiUrl}/products/compare?ids=${ids.join(',')}`),
+    );
   }
 }

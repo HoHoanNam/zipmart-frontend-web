@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import type { Product } from '../../../core/models/product.model';
 import { ToastService } from '../../toast/toast.service';
 import { WishlistService } from '../../../features/wishlist/wishlist.service';
+import { CompareService } from '../../compare/compare.service';
 import { VndCurrencyPipe } from '../../pipes/vnd-currency.pipe';
 import { StarRating } from '../star-rating/star-rating';
 
@@ -14,6 +15,7 @@ import { StarRating } from '../star-rating/star-rating';
 })
 export class ProductCard {
   private readonly wishlistService = inject(WishlistService);
+  private readonly compareService = inject(CompareService);
   private readonly toastService = inject(ToastService);
 
   readonly product = input.required<Product>();
@@ -24,6 +26,7 @@ export class ProductCard {
   readonly addToCart = output<string>();
 
   readonly wishlisted = computed(() => this.wishlistService.isWishlisted(this.product().id));
+  readonly comparing = computed(() => this.compareService.isComparing(this.product().id));
 
   readonly hasDiscount = computed(() => {
     const original = this.product().originalPrice;
@@ -54,5 +57,15 @@ export class ProductCard {
     } else {
       this.toastService.showWishlistRemoved(name);
     }
+  }
+
+  onToggleCompare(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!this.comparing() && !this.compareService.canAddMore()) {
+      this.toastService.showCompareLimitReached();
+      return;
+    }
+    this.compareService.toggle(this.product().id);
   }
 }

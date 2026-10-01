@@ -1,0 +1,81 @@
+{
+  "COMMON": {
+    "LOADING": "Đang tải...",
+    "SAVE": "Lưu",
+    "CANCEL": "Huỷ",
+    "VIEW_ALL": "Xem tất cả",
+    "CLOSE": "Đóng"
+  },
+  "NAVBAR": {
+    "CATEGORIES": "Danh mục",
+    "SEARCH_PLACEHOLDER": "Tìm kiếm sản phẩm...",
+    "NOTIFICATIONS": "Thông báo",
+    "NO_NOTIFICATIONS": "Chưa có thông báo nào.",
+    "MARK_ALL_READ": "Đánh dấu tất cả đã đọc",
+    "COMPARE": "So sánh",
+    "WISHLIST": "Yêu thích",
+    "CART": "Giỏ hàng",
+    "ORDERS": "Đơn hàng",
+    "PROFILE": "Hồ sơ",
+    "LOGOUT": "Đăng xuất",
+    "LOGIN": "Đăng nhập",
+    "REGISTER": "Đăng ký"
+  },
+  "HOME": {
+    "ALL_AI_RECOMMENDATIONS": "Tất cả đề xuất AI",
+    "BEST_SELLERS": "Bán chạy nhất",
+    "LOGIN_TO_VIEW_RECOMMENDATIONS": "để xem gợi ý sản phẩm dành riêng cho bạn.",
+    "QUICK_SEARCH_TITLE": "Tìm nhanh sản phẩm bạn cần",
+    "QUICK_SEARCH_SUBTITLE": "Nhập từ khoá — ví dụ \"balo laptop 15.6 inch\" — để tìm ngay trong danh mục sản phẩm.",
+    "QUICK_SEARCH_PLACEHOLDER": "Mô tả nhu cầu mua sắm..."
+  },
+  "PRODUCT_CARD": {
+    "ADD_TO_CART": "Thêm vào giỏ",
+    "OUT_OF_STOCK": "Hết hàng",
+    "IN_STOCK": "Còn {{count}}",
+    "MATCH_SCORE": "Khớp {{percent}}%",
+    "WISHLIST_ARIA": "Thêm vào yêu thích",
+    "COMPARE_ARIA": "So sánh sản phẩm",
+    "SOLD_COUNT": "Đã bán {{count}}"
+  },
+  "CART": {
+    "TITLE": "Giỏ hàng",
+    "EMPTY": "Giỏ hàng của bạn đang trống.",
+    "CONTINUE_SHOPPING": "Tiếp tục mua sắm",
+    "VARIANT_LABEL": "Phân loại: {{value}}",
+    "REMOVE": "Xoá",
+    "ORDER_SUMMARY": "Tóm tắt đơn hàng",
+    "COUPON_PLACEHOLDER": "Mã giảm giá",
+    "APPLY": "Áp dụng",
+    "SUBTOTAL": "Tạm tính",
+    "DISCOUNT": "Giảm giá ({{code}})",
+    "VAT": "Thuế VAT (8%)",
+    "TOTAL": "Tổng cộng",
+    "PROCEED_TO_CHECKOUT": "Tiến hành thanh toán"
+  },
+  "CHECKOUT": {
+    "TITLE": "Thanh toán",
+    "MOCK_NOTICE": "Đơn hàng sẽ được tạo với trạng thái pending cho tới khi thanh toán hoàn tất.",
+    "SHIPPING_ADDRESS": "Địa chỉ giao hàng",
+    "NEW_ADDRESS": "+ Địa chỉ mới",
+    "RECIPIENT_NAME": "Họ tên người nhận",
+    "PHONE_NUMBER": "Số điện thoại",
+    "CITY": "Tỉnh/Thành phố",
+    "DISTRICT": "Quận/Huyện",
+    "WARD": "Phường/Xã",
+    "STREET_ADDRESS": "Địa chỉ cụ thể",
+    "STREET_ADDRESS_PLACEHOLDER": "Số nhà, tên đường...",
+    "PAYMENT_METHOD": "Phương thức thanh toán",
+    "SAVE_ADDRESS": "Lưu địa chỉ này cho lần sau",
+    "CONFIRM_ORDER": "Xác nhận đặt hàng",
+    "PROCESSING": "Đang xử lý...",
+    "BACK_TO_CART": "Quay lại giỏ hàng",
+    "ORDER_SUMMARY": "Tóm tắt đơn hàng",
+    "SUBTOTAL": "Tạm tính",
+    "VAT": "Thuế VAT (8%)",
+    "TOTAL": "Tổng cộng",
+    "LOYALTY_REDEEM_LABEL": "Dùng điểm tích luỹ",
+    "LOYALTY_REDEEM_PLACEHOLDER": "Số điểm muốn dùng",
+    "LOYALTY_AVAILABLE": "Bạn có {{points}} điểm khả dụng"
+  }
+}

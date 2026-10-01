@@ -1,0 +1,15 @@
+<div class="flex items-center rounded-control bg-neutral-100 p-0.5 text-caption-bold">
+  @for (lang of languages; track lang.code) {
+    <button
+      type="button"
+      (click)="select(lang.code)"
+      [class.bg-white]="currentLang() === lang.code"
+      [class.text-neutral-900]="currentLang() === lang.code"
+      [class.shadow-card]="currentLang() === lang.code"
+      [class.text-neutral-600]="currentLang() !== lang.code"
+      class="rounded-control px-2 py-1 transition-colors"
+    >
+      {{ lang.label }}
+    </button>
+  }
+</div>

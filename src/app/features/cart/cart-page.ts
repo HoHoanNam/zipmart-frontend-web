@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { VAT_RATE } from '../../core/constants/order.constants';
 import type { AvailableCoupon } from '../../core/models/coupon.model';
 import type { Product } from '../../core/models/product.model';
@@ -22,7 +23,7 @@ interface CartRow {
 
 @Component({
   selector: 'app-cart-page',
-  imports: [RouterLink, FormsModule, VndCurrencyPipe],
+  imports: [RouterLink, FormsModule, VndCurrencyPipe, TranslatePipe],
   templateUrl: './cart-page.html',
 })
 export class CartPage {

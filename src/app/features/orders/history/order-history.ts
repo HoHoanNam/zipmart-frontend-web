@@ -16,6 +16,8 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
 const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   cod: 'COD',
   credit: 'Credit',
+  vnpay: 'VNPay',
+  momo: 'Momo',
 };
 
 @Component({

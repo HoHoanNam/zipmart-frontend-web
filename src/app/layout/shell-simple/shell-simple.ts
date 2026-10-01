@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ChatWidget } from '../../features/support/chat-widget';
 import { Footer } from '../../shared/components/footer/footer';
+import { InstallPrompt } from '../../shared/components/install-prompt/install-prompt';
 import { Navbar } from '../../shared/components/navbar/navbar';
 
 /**
@@ -11,7 +13,7 @@ import { Navbar } from '../../shared/components/navbar/navbar';
  */
 @Component({
   selector: 'app-shell-simple',
-  imports: [RouterOutlet, Navbar, Footer],
+  imports: [RouterOutlet, Navbar, Footer, InstallPrompt, ChatWidget],
   templateUrl: './shell-simple.html',
 })
 export class ShellSimple {}

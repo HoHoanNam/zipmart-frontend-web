@@ -13,9 +13,19 @@
         {{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}
       </p>
     </div>
-    <span class="rounded-badge bg-neutral-100 px-3 py-1 text-body-medium font-medium text-neutral-700">
-      {{ statusLabel(order.status) }}
-    </span>
+    <div class="flex items-center gap-3">
+      @if (canRequestReturn()) {
+        <a
+          [routerLink]="['/orders', order.id, 'return']"
+          class="rounded-control border border-brand px-3 py-1.5 text-body-medium text-brand hover:bg-brand/5"
+        >
+          Yêu cầu đổi trả
+        </a>
+      }
+      <span class="rounded-badge bg-neutral-100 px-3 py-1 text-body-medium font-medium text-neutral-700">
+        {{ statusLabel(order.status) }}
+      </span>
+    </div>
   </div>
 
   <div class="mb-6 rounded-card border border-neutral-100 bg-white p-4 shadow-card">
@@ -139,7 +149,8 @@
               class="w-full rounded-control border border-neutral-300 px-3 py-2 text-body-regular"
             >
               <option value="cod">Thanh toán khi nhận hàng (COD)</option>
-              <option value="credit">Thẻ tín dụng (Credit)</option>
+              <option value="vnpay">VNPay</option>
+              <option value="momo">Momo</option>
             </select>
             <div class="flex gap-2">
               <button

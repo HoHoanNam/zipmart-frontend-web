@@ -1,7 +1,8 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { RETURN_WINDOW_DAYS } from '../../../core/constants/order.constants';
 import type {
   OrderDetail as OrderDetailModel,
   OrderStatus,
@@ -12,6 +13,8 @@ import type {
 import { OrderTimeline } from '../../../shared/components/order-timeline/order-timeline';
 import { VndCurrencyPipe } from '../../../shared/pipes/vnd-currency.pipe';
 import { OrdersService } from '../orders.service';
+
+const RETURN_WINDOW_MS = RETURN_WINDOW_DAYS * 24 * 60 * 60 * 1000;
 
 const STATUS_LABELS: Record<OrderStatus, string> = {
   pending: 'Đang xử lý',
@@ -24,6 +27,8 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
 const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   cod: 'Thanh toán khi nhận hàng (COD)',
   credit: 'Thẻ tín dụng (Credit)',
+  vnpay: 'VNPay',
+  momo: 'Momo',
 };
 
 @Component({
@@ -45,6 +50,13 @@ export class OrderDetail {
   readonly error = signal<string | null>(null);
 
   editForm: UpdateOrderAddressPayload = {};
+
+  /** Client-side heuristic only — see RETURN_WINDOW_DAYS doc comment. Real enforcement is server-side. */
+  readonly canRequestReturn = computed(() => {
+    const order = this.order();
+    if (!order || order.status !== 'completed') return false;
+    return Date.now() - new Date(order.createdAt).getTime() <= RETURN_WINDOW_MS;
+  });
 
   constructor() {
     this.route.paramMap.subscribe((params) => {

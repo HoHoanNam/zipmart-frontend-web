@@ -7,6 +7,7 @@ import type { UserProfile } from '../../core/models/user.model';
 import { AddressList } from '../addresses/address-list';
 import { VndCurrencyPipe } from '../../shared/pipes/vnd-currency.pipe';
 import { ToastService } from '../../shared/toast/toast.service';
+import { LoyaltyService } from '../loyalty/loyalty.service';
 import { OrdersService } from '../orders/orders.service';
 import { ProfileService } from './profile.service';
 import { UploadsService } from './uploads.service';
@@ -36,6 +37,7 @@ export class ProfilePage {
   private readonly uploadsService = inject(UploadsService);
   private readonly ordersService = inject(OrdersService);
   private readonly toastService = inject(ToastService);
+  readonly loyaltyService = inject(LoyaltyService);
 
   readonly profile = signal<UserProfile | null>(null);
   readonly loading = signal(true);

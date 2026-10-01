@@ -1,27 +1,35 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { VAT_RATE } from '../../../core/constants/order.constants';
 import type { Address } from '../../../core/models/address.model';
 import type { PaymentMethod } from '../../../core/models/order.model';
+import type { PaymentGateway } from '../../../core/models/payment.model';
 import type { Product } from '../../../core/models/product.model';
 import { BehaviorTrackingService } from '../../../core/tracking/behavior-tracking.service';
 import { VndCurrencyPipe } from '../../../shared/pipes/vnd-currency.pipe';
 import { AddressesService } from '../../addresses/addresses.service';
 import { CartService } from '../../cart/cart.service';
+import { LoyaltyService } from '../../loyalty/loyalty.service';
 import { ProductsService } from '../../products/products.service';
 import { OrdersService } from '../orders.service';
+import { PaymentService } from '../payment.service';
+
+const GATEWAY_METHODS: readonly PaymentMethod[] = ['vnpay', 'momo'];
 
 @Component({
   selector: 'app-checkout',
-  imports: [RouterLink, FormsModule, VndCurrencyPipe],
+  imports: [RouterLink, FormsModule, VndCurrencyPipe, TranslatePipe],
   templateUrl: './checkout.html',
 })
 export class Checkout {
   readonly cartService = inject(CartService);
+  readonly loyaltyService = inject(LoyaltyService);
   private readonly productsService = inject(ProductsService);
   private readonly ordersService = inject(OrdersService);
   private readonly addressesService = inject(AddressesService);
+  private readonly paymentService = inject(PaymentService);
   private readonly tracking = inject(BehaviorTrackingService);
   private readonly router = inject(Router);
 
@@ -32,6 +40,10 @@ export class Checkout {
   ward = '';
   streetAddress = '';
   paymentMethod: PaymentMethod = 'cod';
+  /** Points the customer wants to redeem — capped client-side to their
+   * balance; the backend computes the actual monetary discount and is the
+   * source of truth (`LOYALTY_REDEMPTION_RATE`, not duplicated here). */
+  redeemPoints: number | null = null;
 
   readonly savedAddresses = signal<Address[]>([]);
   selectedAddressId: string | 'new' = 'new';
@@ -101,7 +113,7 @@ export class Checkout {
     this.error.set(null);
     try {
       const cartItems = this.cartService.items();
-      const order = await this.ordersService.checkout({
+      const { order, requiresPayment } = await this.ordersService.checkout({
         recipientName: this.recipientName,
         phoneNumber: this.phoneNumber,
         city: this.city,
@@ -110,6 +122,7 @@ export class Checkout {
         streetAddress: this.streetAddress,
         paymentMethod: this.paymentMethod,
         couponCode: this.cartService.couponCode() ?? undefined,
+        redeemPoints: this.redeemPoints ?? undefined,
       });
       for (const item of cartItems) {
         this.tracking.track(item.productId, 'purchase');
@@ -126,6 +139,20 @@ export class Checkout {
       }
       await this.cartService.load();
       this.cartService.clearCoupon();
+      void this.loyaltyService.load();
+
+      if (requiresPayment && GATEWAY_METHODS.includes(this.paymentMethod)) {
+        // Full-page navigation to the gateway's hosted payment page — there's
+        // no SPA state to preserve past this point, the gateway redirects
+        // back to `/payment-return` when the customer finishes there.
+        const { checkoutUrl } = await this.paymentService.checkout({
+          orderId: order.id,
+          gateway: this.paymentMethod as PaymentGateway,
+        });
+        window.location.href = checkoutUrl;
+        return;
+      }
+
       this.router.navigate(['/orders'], { state: { justPlacedOrderId: order.id } });
     } catch {
       this.error.set('Giỏ hàng trống hoặc đã xảy ra lỗi khi đặt hàng.');

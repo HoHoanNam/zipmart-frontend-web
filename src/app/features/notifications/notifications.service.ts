@@ -4,22 +4,30 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/auth.service';
 import type { Notification } from '../../core/models/notification.model';
-
-/** No WebSocket/SSE infra in this app yet — periodic polling is the simplest way to keep the badge reasonably fresh. */
-const POLL_INTERVAL_MS = 60_000;
+import { RealtimeService } from '../../core/realtime/realtime.service';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationsService {
   private readonly http = inject(HttpClient);
   private readonly authService = inject(AuthService);
+  private readonly realtime = inject(RealtimeService);
 
   private readonly notificationsSignal = signal<Notification[]>([]);
   readonly notifications = this.notificationsSignal.asReadonly();
   readonly unreadCount = computed(() => this.notificationsSignal().filter((n) => !n.isRead).length);
 
-  private pollHandle: ReturnType<typeof setInterval> | undefined;
-
   constructor() {
+    // A.8 — the `setInterval` poll this service used to run was replaced by
+    // a push over the shared `RealtimeService` socket (Infra B: server emits
+    // into room `user:{userId}` on `notification:new`). `RealtimeService.on`
+    // is safe to call before the socket exists, so this registration doesn't
+    // need to be gated on auth state itself — only the initial REST load
+    // below does.
+    this.realtime.on('notification:new', (...args) => {
+      const notification = args[0] as Notification;
+      this.notificationsSignal.update((list) => [notification, ...list]);
+    });
+
     // Same pattern as `WishlistService`: load reactively off auth state
     // (not just when the inbox dropdown is opened) so the bell badge is
     // already correct as soon as any authenticated page renders, and clears
@@ -28,10 +36,8 @@ export class NotificationsService {
     effect(() => {
       if (this.authService.isAuthenticated()) {
         void this.load();
-        this.startPolling();
       } else {
         this.notificationsSignal.set([]);
-        this.stopPolling();
       }
     });
   }
@@ -53,15 +59,5 @@ export class NotificationsService {
   async markAllRead(): Promise<void> {
     await firstValueFrom(this.http.patch(`${environment.apiUrl}/notifications/read-all`, {}));
     this.notificationsSignal.update((list) => list.map((n) => ({ ...n, isRead: true })));
-  }
-
-  private startPolling(): void {
-    if (this.pollHandle) return;
-    this.pollHandle = setInterval(() => void this.load(), POLL_INTERVAL_MS);
-  }
-
-  private stopPolling(): void {
-    clearInterval(this.pollHandle);
-    this.pollHandle = undefined;
   }
 }

@@ -14,7 +14,10 @@
     </div>
 
     <div>
-      <label class="mb-1 block text-sm font-medium text-slate-700">Mật khẩu</label>
+      <div class="mb-1 flex items-center justify-between">
+        <label class="block text-sm font-medium text-slate-700">Mật khẩu</label>
+        <a routerLink="/forgot-password" class="text-sm text-indigo-600 hover:underline">Quên mật khẩu?</a>
+      </div>
       <input
         type="password"
         name="password"
@@ -36,6 +39,29 @@
       {{ loading() ? 'Đang đăng nhập...' : 'Đăng nhập' }}
     </button>
   </form>
+
+  <div class="my-4 flex items-center gap-2">
+    <span class="h-px flex-1 bg-slate-200"></span>
+    <span class="text-xs text-slate-500">hoặc</span>
+    <span class="h-px flex-1 bg-slate-200"></span>
+  </div>
+
+  <div class="space-y-2">
+    <a
+      [href]="googleLoginUrl"
+      class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+    >
+      <span class="material-symbols-outlined text-[18px]">account_circle</span>
+      Đăng nhập với Google
+    </a>
+    <a
+      [href]="facebookLoginUrl"
+      class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+    >
+      <span class="material-symbols-outlined text-[18px]">thumb_up</span>
+      Đăng nhập với Facebook
+    </a>
+  </div>
 
   <p class="mt-4 text-center text-sm text-slate-500">
     Chưa có tài khoản?

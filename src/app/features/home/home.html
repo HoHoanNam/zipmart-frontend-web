@@ -11,7 +11,7 @@
     <div class="flex items-center gap-1 overflow-x-auto pb-1">
       <button type="button" class="flex items-center gap-1.5 rounded-control bg-brand px-4 py-2 text-body-medium text-white shadow-card">
         <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
-        Tất cả đề xuất AI
+        {{ 'HOME.ALL_AI_RECOMMENDATIONS' | translate }}
       </button>
       @for (category of categories(); track category.id) {
         <a
@@ -27,7 +27,7 @@
 
   <!-- Best sellers -->
   <section>
-    <h2 class="mb-4 text-headline-2 text-neutral-900">Bán chạy nhất</h2>
+    <h2 class="mb-4 text-headline-2 text-neutral-900">{{ 'HOME.BEST_SELLERS' | translate }}</h2>
     @if (bestSellersLoading()) {
       <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         @for (i of [1, 2, 3, 4, 5, 6]; track i) {
@@ -49,8 +49,8 @@
   } @else {
     <div class="rounded-card border border-dashed border-neutral-300 p-6 text-center">
       <p class="text-body-regular text-neutral-600">
-        <a routerLink="/login" class="font-medium text-brand hover:underline">Đăng nhập</a>
-        để xem gợi ý sản phẩm dành riêng cho bạn.
+        <a routerLink="/login" class="font-medium text-brand hover:underline">{{ 'NAVBAR.LOGIN' | translate }}</a>
+        {{ 'HOME.LOGIN_TO_VIEW_RECOMMENDATIONS' | translate }}
       </p>
     </div>
   }
@@ -62,9 +62,9 @@
         <span class="material-symbols-outlined text-[28px]">psychology_alt</span>
       </div>
       <div>
-        <h4 class="text-headline-3 text-neutral-900">Tìm nhanh sản phẩm bạn cần</h4>
+        <h4 class="text-headline-3 text-neutral-900">{{ 'HOME.QUICK_SEARCH_TITLE' | translate }}</h4>
         <p class="mt-1 max-w-xl text-body-regular text-neutral-600">
-          Nhập từ khoá — ví dụ "balo laptop 15.6 inch" — để tìm ngay trong danh mục sản phẩm.
+          {{ 'HOME.QUICK_SEARCH_SUBTITLE' | translate }}
         </p>
       </div>
     </div>
@@ -75,7 +75,7 @@
           name="quickSearch"
           [(ngModel)]="searchQuery"
           (keyup.enter)="onSearch()"
-          placeholder="Mô tả nhu cầu mua sắm..."
+          [placeholder]="'HOME.QUICK_SEARCH_PLACEHOLDER' | translate"
           class="w-full bg-transparent px-3 py-2 text-body-regular text-neutral-900 placeholder:text-neutral-600 focus:outline-none md:w-64"
         />
         <button

@@ -1,19 +1,14 @@
 <div class="mx-auto max-w-3xl">
-  <h1 class="mb-6 text-headline-1 text-neutral-900">Thanh toán</h1>
+  <h1 class="mb-6 text-headline-1 text-neutral-900">{{ 'CHECKOUT.TITLE' | translate }}</h1>
 
   <div class="grid gap-6 md:grid-cols-3">
     <form
       (ngSubmit)="confirmOrder()"
       class="space-y-4 rounded-card border border-neutral-100 bg-white p-6 shadow-card md:col-span-2"
     >
-      <p class="text-body-regular text-neutral-600">
-        Đây là bước thanh toán giả lập — chưa tích hợp cổng thanh toán thật. Đơn hàng sẽ được tạo
-        với trạng thái <span class="font-medium text-neutral-900">pending</span>.
-      </p>
-
       @if (savedAddresses().length > 0) {
         <div>
-          <label class="mb-1 block text-body-regular font-medium text-neutral-700">Địa chỉ giao hàng</label>
+          <label class="mb-1 block text-body-regular font-medium text-neutral-700">{{ 'CHECKOUT.SHIPPING_ADDRESS' | translate }}</label>
           <div class="space-y-2">
             @for (address of savedAddresses(); track address.id) {
               <label
@@ -48,7 +43,7 @@
                 [checked]="selectedAddressId === 'new'"
                 (change)="onSelectAddress('new')"
               />
-              <span class="text-neutral-900">+ Địa chỉ mới</span>
+              <span class="text-neutral-900">{{ 'CHECKOUT.NEW_ADDRESS' | translate }}</span>
             </label>
           </div>
         </div>
@@ -56,7 +51,7 @@
 
       <div>
         <label class="mb-1 block text-body-regular font-medium text-neutral-700"
-          >Họ tên người nhận</label
+          >{{ 'CHECKOUT.RECIPIENT_NAME' | translate }}</label
         >
         <input
           type="text"
@@ -69,7 +64,7 @@
 
       <div>
         <label class="mb-1 block text-body-regular font-medium text-neutral-700"
-          >Số điện thoại</label
+          >{{ 'CHECKOUT.PHONE_NUMBER' | translate }}</label
         >
         <input
           type="tel"
@@ -83,7 +78,7 @@
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div>
           <label class="mb-1 block text-body-regular font-medium text-neutral-700"
-            >Tỉnh/Thành phố</label
+            >{{ 'CHECKOUT.CITY' | translate }}</label
           >
           <input
             type="text"
@@ -95,7 +90,7 @@
         </div>
         <div>
           <label class="mb-1 block text-body-regular font-medium text-neutral-700"
-            >Quận/Huyện</label
+            >{{ 'CHECKOUT.DISTRICT' | translate }}</label
           >
           <input
             type="text"
@@ -106,7 +101,7 @@
           />
         </div>
         <div>
-          <label class="mb-1 block text-body-regular font-medium text-neutral-700">Phường/Xã</label>
+          <label class="mb-1 block text-body-regular font-medium text-neutral-700">{{ 'CHECKOUT.WARD' | translate }}</label>
           <input
             type="text"
             name="ward"
@@ -119,21 +114,21 @@
 
       <div>
         <label class="mb-1 block text-body-regular font-medium text-neutral-700"
-          >Địa chỉ cụ thể</label
+          >{{ 'CHECKOUT.STREET_ADDRESS' | translate }}</label
         >
         <input
           type="text"
           name="streetAddress"
           required
           [(ngModel)]="streetAddress"
-          placeholder="Số nhà, tên đường..."
+          [placeholder]="'CHECKOUT.STREET_ADDRESS_PLACEHOLDER' | translate"
           class="w-full rounded-control border border-neutral-300 px-3 py-2 text-body-regular focus:border-brand focus:outline-none"
         />
       </div>
 
       <div>
         <label class="mb-1 block text-body-regular font-medium text-neutral-700"
-          >Phương thức thanh toán</label
+          >{{ 'CHECKOUT.PAYMENT_METHOD' | translate }}</label
         >
         <select
           name="paymentMethod"
@@ -141,14 +136,35 @@
           class="w-full rounded-control border border-neutral-300 px-3 py-2 text-body-regular focus:border-brand focus:outline-none"
         >
           <option value="cod">Thanh toán khi nhận hàng (COD)</option>
-          <option value="credit">Thẻ tín dụng (Credit)</option>
+          <option value="vnpay">VNPay</option>
+          <option value="momo">Momo</option>
         </select>
       </div>
+
+      @if (loyaltyService.points() > 0) {
+        <div>
+          <label class="mb-1 block text-body-regular font-medium text-neutral-700">
+            {{ 'CHECKOUT.LOYALTY_REDEEM_LABEL' | translate }}
+          </label>
+          <input
+            type="number"
+            name="redeemPoints"
+            min="0"
+            [max]="loyaltyService.points()"
+            [(ngModel)]="redeemPoints"
+            [placeholder]="'CHECKOUT.LOYALTY_REDEEM_PLACEHOLDER' | translate"
+            class="w-full rounded-control border border-neutral-300 px-3 py-2 text-body-regular focus:border-brand focus:outline-none"
+          />
+          <p class="mt-1 text-caption text-neutral-600">
+            {{ 'CHECKOUT.LOYALTY_AVAILABLE' | translate: { points: loyaltyService.points() } }}
+          </p>
+        </div>
+      }
 
       @if (selectedAddressId === 'new') {
         <label class="flex items-center gap-2 text-body-regular text-neutral-700">
           <input type="checkbox" [(ngModel)]="saveNewAddress" name="saveNewAddress" />
-          Lưu địa chỉ này cho lần sau
+          {{ 'CHECKOUT.SAVE_ADDRESS' | translate }}
         </label>
       }
 
@@ -161,41 +177,41 @@
         [disabled]="placing()"
         class="w-full rounded-control bg-brand px-4 py-3 text-body-medium text-white hover:bg-brand-dark disabled:opacity-60"
       >
-        {{ placing() ? 'Đang xử lý...' : 'Xác nhận đặt hàng' }}
+        {{ placing() ? ('CHECKOUT.PROCESSING' | translate) : ('CHECKOUT.CONFIRM_ORDER' | translate) }}
       </button>
 
       <a
         routerLink="/cart"
         class="block text-center text-body-regular text-neutral-600 hover:underline"
       >
-        Quay lại giỏ hàng
+        {{ 'CHECKOUT.BACK_TO_CART' | translate }}
       </a>
     </form>
 
     <div
       class="h-fit rounded-card border border-neutral-100 bg-white p-4 shadow-card md:col-span-1"
     >
-      <h2 class="text-body-medium font-semibold text-neutral-900">Tóm tắt đơn hàng</h2>
+      <h2 class="text-body-medium font-semibold text-neutral-900">{{ 'CHECKOUT.ORDER_SUMMARY' | translate }}</h2>
       @if (loadingSummary()) {
         <div class="mt-4 h-24 animate-pulse rounded-control bg-neutral-50"></div>
       } @else {
         <dl class="mt-4 space-y-2 text-body-regular">
           <div class="flex justify-between">
-            <dt class="text-neutral-600">Tạm tính</dt>
+            <dt class="text-neutral-600">{{ 'CHECKOUT.SUBTOTAL' | translate }}</dt>
             <dd class="text-neutral-900">{{ subtotal() | vndCurrency }}</dd>
           </div>
           @if (cartService.discountAmount() > 0) {
             <div class="flex justify-between text-success">
-              <dt>Giảm giá ({{ cartService.couponCode() }})</dt>
+              <dt>{{ 'CART.DISCOUNT' | translate: { code: cartService.couponCode() } }}</dt>
               <dd>-{{ cartService.discountAmount() | vndCurrency }}</dd>
             </div>
           }
           <div class="flex justify-between">
-            <dt class="text-neutral-600">Thuế VAT (8%)</dt>
+            <dt class="text-neutral-600">{{ 'CHECKOUT.VAT' | translate }}</dt>
             <dd class="text-neutral-900">{{ taxAmount() | vndCurrency }}</dd>
           </div>
           <div class="flex justify-between gap-2 border-t border-neutral-100 pt-2">
-            <dt class="text-body-medium font-semibold text-neutral-900">Tổng cộng</dt>
+            <dt class="text-body-medium font-semibold text-neutral-900">{{ 'CHECKOUT.TOTAL' | translate }}</dt>
             <dd class="text-price-lg text-neutral-900">{{ grandTotal() | vndCurrency }}</dd>
           </div>
         </dl>

@@ -1,0 +1,81 @@
+{
+  "COMMON": {
+    "LOADING": "Loading...",
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "VIEW_ALL": "View all",
+    "CLOSE": "Close"
+  },
+  "NAVBAR": {
+    "CATEGORIES": "Categories",
+    "SEARCH_PLACEHOLDER": "Search products...",
+    "NOTIFICATIONS": "Notifications",
+    "NO_NOTIFICATIONS": "No notifications yet.",
+    "MARK_ALL_READ": "Mark all as read",
+    "COMPARE": "Compare",
+    "WISHLIST": "Wishlist",
+    "CART": "Cart",
+    "ORDERS": "Orders",
+    "PROFILE": "Profile",
+    "LOGOUT": "Log out",
+    "LOGIN": "Log in",
+    "REGISTER": "Sign up"
+  },
+  "HOME": {
+    "ALL_AI_RECOMMENDATIONS": "All AI picks",
+    "BEST_SELLERS": "Best sellers",
+    "LOGIN_TO_VIEW_RECOMMENDATIONS": "to see recommendations picked just for you.",
+    "QUICK_SEARCH_TITLE": "Quickly find what you need",
+    "QUICK_SEARCH_SUBTITLE": "Type a keyword — e.g. \"15.6 inch laptop backpack\" — to search the catalog instantly.",
+    "QUICK_SEARCH_PLACEHOLDER": "Describe what you're shopping for..."
+  },
+  "PRODUCT_CARD": {
+    "ADD_TO_CART": "Add to cart",
+    "OUT_OF_STOCK": "Out of stock",
+    "IN_STOCK": "{{count}} in stock",
+    "MATCH_SCORE": "{{percent}}% match",
+    "WISHLIST_ARIA": "Add to wishlist",
+    "COMPARE_ARIA": "Compare product",
+    "SOLD_COUNT": "{{count}} sold"
+  },
+  "CART": {
+    "TITLE": "Cart",
+    "EMPTY": "Your cart is empty.",
+    "CONTINUE_SHOPPING": "Continue shopping",
+    "VARIANT_LABEL": "Variant: {{value}}",
+    "REMOVE": "Remove",
+    "ORDER_SUMMARY": "Order summary",
+    "COUPON_PLACEHOLDER": "Coupon code",
+    "APPLY": "Apply",
+    "SUBTOTAL": "Subtotal",
+    "DISCOUNT": "Discount ({{code}})",
+    "VAT": "VAT (8%)",
+    "TOTAL": "Total",
+    "PROCEED_TO_CHECKOUT": "Proceed to checkout"
+  },
+  "CHECKOUT": {
+    "TITLE": "Checkout",
+    "MOCK_NOTICE": "The order will be created as pending until payment completes.",
+    "SHIPPING_ADDRESS": "Shipping address",
+    "NEW_ADDRESS": "+ New address",
+    "RECIPIENT_NAME": "Recipient name",
+    "PHONE_NUMBER": "Phone number",
+    "CITY": "City/Province",
+    "DISTRICT": "District",
+    "WARD": "Ward",
+    "STREET_ADDRESS": "Street address",
+    "STREET_ADDRESS_PLACEHOLDER": "House number, street name...",
+    "PAYMENT_METHOD": "Payment method",
+    "SAVE_ADDRESS": "Save this address for next time",
+    "CONFIRM_ORDER": "Place order",
+    "PROCESSING": "Processing...",
+    "BACK_TO_CART": "Back to cart",
+    "ORDER_SUMMARY": "Order summary",
+    "SUBTOTAL": "Subtotal",
+    "VAT": "VAT (8%)",
+    "TOTAL": "Total",
+    "LOYALTY_REDEEM_LABEL": "Use loyalty points",
+    "LOYALTY_REDEEM_PLACEHOLDER": "Points to redeem",
+    "LOYALTY_AVAILABLE": "You have {{points}} points available"
+  }
+}

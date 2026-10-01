@@ -1,5 +1,8 @@
 export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'completed' | 'cancelled';
-export type PaymentMethod = 'cod' | 'credit';
+/** `credit` is a legacy mock method kept only so old orders still render a label — no longer offered at checkout. */
+export type PaymentMethod = 'cod' | 'credit' | 'vnpay' | 'momo';
+/** Separate from `OrderStatus` lifecycle — see Infra D in the expansion plan. */
+export type PaymentStatus = 'unpaid' | 'paid' | 'refunded';
 
 export interface OrderItem {
   id: string;
@@ -24,6 +27,8 @@ export interface Order {
   ward: string | null;
   streetAddress: string | null;
   paymentMethod: PaymentMethod;
+  /** Present once Infra D (payment gateways) ships backend-side; optional here so this model doesn't break if it's momentarily absent. */
+  paymentStatus?: PaymentStatus;
   taxAmount: string;
   discountAmount: string;
   couponCode: string | null;
@@ -52,6 +57,8 @@ export interface CreateOrderPayload {
   streetAddress: string;
   paymentMethod: PaymentMethod;
   couponCode?: string;
+  /** Loyalty points to redeem against this order — see A.6 in the expansion plan. */
+  redeemPoints?: number;
 }
 
 export interface UpdateOrderAddressPayload {

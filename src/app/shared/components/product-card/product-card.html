@@ -28,7 +28,7 @@
           class="inline-flex items-center gap-1 rounded-badge bg-white/90 px-1.5 py-0.5 text-[10px] font-semibold text-neutral-600 backdrop-blur-sm"
         >
           <span class="material-symbols-outlined text-[11px] text-brand">auto_awesome</span>
-          Khớp {{ score * 100 | number: '1.0-0' }}%
+          {{ 'PRODUCT_CARD.MATCH_SCORE' | translate: { percent: (score * 100 | number: '1.0-0') } }}
         </span>
       }
       @if (hasDiscount()) {
@@ -40,7 +40,7 @@
 
     <button
       type="button"
-      aria-label="So sánh sản phẩm"
+      [attr.aria-label]="'PRODUCT_CARD.COMPARE_ARIA' | translate"
       (click)="onToggleCompare($event)"
       class="absolute right-11 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-neutral-600 backdrop-blur-sm transition-colors hover:bg-white"
       [class.text-brand]="comparing()"
@@ -50,7 +50,7 @@
 
     <button
       type="button"
-      aria-label="Thêm vào yêu thích"
+      [attr.aria-label]="'PRODUCT_CARD.WISHLIST_ARIA' | translate"
       (click)="onToggleWishlist($event)"
       class="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-neutral-600 backdrop-blur-sm transition-colors hover:bg-white"
       [class.text-danger]="wishlisted()"
@@ -81,7 +81,9 @@
     </div>
   }
   @if (product().soldCount) {
-    <p class="mt-0.5 text-caption text-neutral-600">Đã bán {{ product().soldCount }}</p>
+    <p class="mt-0.5 text-caption text-neutral-600">
+      {{ 'PRODUCT_CARD.SOLD_COUNT' | translate: { count: product().soldCount } }}
+    </p>
   }
 
   <div class="mt-auto">
@@ -102,7 +104,11 @@
           [class.bg-success]="product().stock > 0"
           [class.bg-danger]="product().stock === 0"
         ></span>
-        {{ product().stock > 0 ? 'Còn ' + product().stock : 'Hết hàng' }}
+        @if (product().stock > 0) {
+          {{ 'PRODUCT_CARD.IN_STOCK' | translate: { count: product().stock } }}
+        } @else {
+          {{ 'PRODUCT_CARD.OUT_OF_STOCK' | translate }}
+        }
       </span>
     </div>
 
@@ -112,7 +118,7 @@
       (click)="onAddToCart($event)"
       class="mt-2 w-full rounded-control bg-brand px-3 py-2 text-body-medium text-white transition hover:bg-brand-dark disabled:cursor-not-allowed disabled:bg-neutral-300"
     >
-      Thêm vào giỏ
+      {{ 'PRODUCT_CARD.ADD_TO_CART' | translate }}
     </button>
   </div>
 </a>

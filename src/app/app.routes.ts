@@ -16,12 +16,34 @@ export const routes: Routes = [
           import('./features/products/list/products-list').then((m) => m.ProductsList),
       },
       {
+        path: 'search',
+        loadComponent: () =>
+          import('./features/search/search-results').then((m) => m.SearchResults),
+      },
+      {
         path: 'login',
         loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
       },
       {
         path: 'register',
         loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
+      },
+      {
+        path: 'oauth-callback',
+        loadComponent: () =>
+          import('./features/auth/oauth-callback/oauth-callback').then((m) => m.OauthCallback),
+      },
+      {
+        path: 'forgot-password',
+        loadComponent: () =>
+          import('./features/auth/forgot-password/forgot-password').then(
+            (m) => m.ForgotPassword,
+          ),
+      },
+      {
+        path: 'reset-password',
+        loadComponent: () =>
+          import('./features/auth/reset-password/reset-password').then((m) => m.ResetPassword),
       },
       {
         path: 'products/:id',
@@ -64,6 +86,17 @@ export const routes: Routes = [
         canActivate: [authGuard],
         loadComponent: () =>
           import('./features/orders/detail/order-detail').then((m) => m.OrderDetail),
+      },
+      {
+        path: 'payment-return',
+        loadComponent: () =>
+          import('./features/orders/payment-return/payment-return').then((m) => m.PaymentReturn),
+      },
+      {
+        path: 'orders/:id/return',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/returns/request-return').then((m) => m.RequestReturn),
       },
       {
         path: 'faq',

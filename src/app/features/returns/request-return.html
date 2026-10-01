@@ -1,0 +1,102 @@
+@if (loading()) {
+  <div class="h-64 animate-pulse rounded-card bg-neutral-50"></div>
+} @else if (order(); as order) {
+  <div class="mx-auto max-w-2xl">
+    <p class="text-caption text-neutral-600">
+      <a [routerLink]="['/orders', order.id]" class="hover:underline">Đơn hàng #{{ order.id.slice(0, 8) }}</a>
+      <span class="mx-1">/</span>
+      <span class="text-neutral-900">Yêu cầu đổi trả</span>
+    </p>
+    <h1 class="mt-1 mb-6 text-headline-1 text-neutral-900">Yêu cầu đổi trả / hoàn tiền</h1>
+
+    @if (submitted()) {
+      <div class="rounded-card border border-emerald-200 bg-emerald-50 p-6 text-center">
+        <span class="material-symbols-outlined text-[40px] text-success">check_circle</span>
+        <p class="mt-2 text-body-medium text-neutral-900">Yêu cầu đổi trả của bạn đã được gửi.</p>
+        <p class="mt-1 text-body-regular text-neutral-600">
+          Chúng tôi sẽ xem xét và phản hồi trong thời gian sớm nhất.
+        </p>
+        <button
+          type="button"
+          (click)="backToOrder()"
+          class="mt-4 rounded-control bg-brand px-4 py-2 text-body-medium text-white hover:bg-brand-dark"
+        >
+          Quay lại đơn hàng
+        </button>
+      </div>
+    } @else {
+      <form (ngSubmit)="onSubmit()" class="space-y-4 rounded-card border border-neutral-100 bg-white p-6 shadow-card">
+        <div>
+          <label class="mb-1 block text-body-regular font-medium text-neutral-700">Sản phẩm cần đổi trả</label>
+          <div class="space-y-2">
+            @for (item of order.items; track item.id) {
+              <label
+                class="flex cursor-pointer items-center gap-3 rounded-control border p-3 text-body-regular"
+                [class.border-brand]="selectedOrderItemId === item.id"
+                [class.border-neutral-300]="selectedOrderItemId !== item.id"
+              >
+                <input
+                  type="radio"
+                  name="orderItem"
+                  [checked]="selectedOrderItemId === item.id"
+                  (change)="selectedOrderItemId = item.id"
+                />
+                <span class="flex-1">
+                  <span class="text-neutral-900">{{ item.productName ?? 'Sản phẩm đã ngừng kinh doanh' }}</span>
+                  <span class="text-neutral-600"> × {{ item.quantity }}</span>
+                </span>
+                <span class="text-body-medium text-neutral-900">{{ item.unitPrice | vndCurrency }}</span>
+              </label>
+            }
+          </div>
+        </div>
+
+        <div>
+          <label class="mb-1 block text-body-regular font-medium text-neutral-700">Lý do đổi trả</label>
+          <select
+            [(ngModel)]="reason"
+            name="reason"
+            class="w-full rounded-control border border-neutral-300 px-3 py-2 text-body-regular focus:border-brand focus:outline-none"
+          >
+            @for (r of reasons; track r[0]) {
+              <option [value]="r[0]">{{ r[1] }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="mb-1 block text-body-regular font-medium text-neutral-700">Ghi chú thêm (không bắt buộc)</label>
+          <textarea
+            [(ngModel)]="note"
+            name="note"
+            rows="4"
+            placeholder="Mô tả chi tiết vấn đề bạn gặp phải..."
+            class="w-full rounded-control border border-neutral-300 px-3 py-2 text-body-regular focus:border-brand focus:outline-none"
+          ></textarea>
+        </div>
+
+        @if (error()) {
+          <p class="text-body-regular text-danger">{{ error() }}</p>
+        }
+
+        <div class="flex gap-3">
+          <button
+            type="submit"
+            [disabled]="submitting() || !selectedOrderItemId"
+            class="rounded-control bg-brand px-4 py-2 text-body-medium text-white hover:bg-brand-dark disabled:opacity-60"
+          >
+            {{ submitting() ? 'Đang gửi...' : 'Gửi yêu cầu' }}
+          </button>
+          <a
+            [routerLink]="['/orders', order.id]"
+            class="rounded-control border border-neutral-300 px-4 py-2 text-body-medium text-neutral-600 hover:bg-neutral-50"
+          >
+            Huỷ
+          </a>
+        </div>
+      </form>
+    }
+  </div>
+} @else {
+  <p class="text-body-regular text-neutral-600">Không tìm thấy đơn hàng.</p>
+}

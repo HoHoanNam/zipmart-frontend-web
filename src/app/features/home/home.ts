@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../core/auth/auth.service';
 import type { Banner } from '../../core/models/banner.model';
 import type { Category } from '../../core/models/category.model';
@@ -33,7 +34,7 @@ const FALLBACK_SLIDE: Banner = {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, FormsModule, RecWidget, CategoryGrid, BannerCarousel, ProductCard],
+  imports: [RouterLink, FormsModule, RecWidget, CategoryGrid, BannerCarousel, ProductCard, TranslatePipe],
   templateUrl: './home.html',
 })
 export class Home {
@@ -78,7 +79,7 @@ export class Home {
   }
 
   onSearch(): void {
-    void this.router.navigate(['/products'], { queryParams: { q: this.searchQuery || null } });
+    void this.router.navigate(['/search'], { queryParams: { q: this.searchQuery || null } });
   }
 
   async onAddToCart(productId: string): Promise<void> {

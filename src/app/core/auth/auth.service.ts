@@ -46,6 +46,31 @@ export class AuthService {
     this.applyTokens(tokens);
   }
 
+  /**
+   * A.4 — Google/Facebook login. The OAuth provider redirects the full page
+   * back to `oauth-callback` with a short-lived one-time `code` (stored
+   * server-side in Redis per the plan, `oauthcode:{code}` TTL 60s) — this
+   * exchanges it for real JWTs, mirroring `login()`.
+   */
+  async exchangeOAuthCode(code: string): Promise<void> {
+    const tokens = await firstValueFrom(
+      this.http.post<AuthTokens>(`${environment.apiUrl}/auth/oauth/exchange`, { code }),
+    );
+    this.applyTokens(tokens);
+  }
+
+  async forgotPassword(email: string): Promise<void> {
+    await firstValueFrom(
+      this.http.post(`${environment.apiUrl}/auth/forgot-password`, { email }),
+    );
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    await firstValueFrom(
+      this.http.post(`${environment.apiUrl}/auth/reset-password`, { token, newPassword }),
+    );
+  }
+
   async refresh(): Promise<AuthTokens> {
     const refreshToken = this.tokenStorage.getRefreshToken();
     const tokens = await firstValueFrom(

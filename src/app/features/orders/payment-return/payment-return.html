@@ -1,0 +1,56 @@
+<div class="mx-auto flex max-w-md flex-col items-center justify-center py-20 text-center">
+  @switch (state()) {
+    @case ('confirming') {
+      <div class="h-10 w-10 animate-spin rounded-full border-4 border-neutral-100 border-t-brand"></div>
+      <p class="mt-4 text-body-medium text-neutral-900">Đang xác nhận với cổng thanh toán...</p>
+    }
+    @case ('polling') {
+      <div class="h-10 w-10 animate-spin rounded-full border-4 border-neutral-100 border-t-brand"></div>
+      <p class="mt-4 text-body-medium text-neutral-900">Đang xác nhận thanh toán...</p>
+      <p class="mt-1 text-body-regular text-neutral-600">
+        Vui lòng không tắt trang này trong khi chúng tôi xác nhận với cổng thanh toán.
+      </p>
+    }
+    @case ('paid') {
+      <span class="material-symbols-outlined text-[48px] text-success">check_circle</span>
+      <h1 class="mt-3 text-headline-2 text-neutral-900">Thanh toán thành công</h1>
+      <p class="mt-1 text-body-regular text-neutral-600">
+        Đơn hàng của bạn đã được thanh toán và đang được xử lý.
+      </p>
+      @if (orderId()) {
+        <a
+          [routerLink]="['/orders', orderId()]"
+          class="mt-6 rounded-control bg-brand px-4 py-2 text-body-medium text-white hover:bg-brand-dark"
+        >
+          Xem đơn hàng
+        </a>
+      }
+    }
+    @case ('timeout') {
+      <span class="material-symbols-outlined text-[48px] text-warning">schedule</span>
+      <h1 class="mt-3 text-headline-2 text-neutral-900">Đang chờ xác nhận</h1>
+      <p class="mt-1 text-body-regular text-neutral-600">
+        Việc xác nhận đang mất nhiều thời gian hơn dự kiến. Vui lòng kiểm tra lại trong đơn hàng
+        của bạn sau vài phút.
+      </p>
+      @if (orderId()) {
+        <a
+          [routerLink]="['/orders', orderId()]"
+          class="mt-6 rounded-control bg-brand px-4 py-2 text-body-medium text-white hover:bg-brand-dark"
+        >
+          Xem đơn hàng
+        </a>
+      }
+    }
+    @case ('failed') {
+      <span class="material-symbols-outlined text-[48px] text-danger">error</span>
+      <h1 class="mt-3 text-headline-2 text-neutral-900">Thanh toán không thành công</h1>
+      <p class="mt-1 text-body-regular text-neutral-600">
+        Đơn hàng đã bị huỷ hoặc thanh toán không hoàn tất. Bạn có thể thử lại từ trang đơn hàng.
+      </p>
+      <a routerLink="/orders" class="mt-6 rounded-control bg-brand px-4 py-2 text-body-medium text-white hover:bg-brand-dark">
+        Về đơn hàng của tôi
+      </a>
+    }
+  }
+</div>

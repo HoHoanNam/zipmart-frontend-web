@@ -1,0 +1,12 @@
+<div class="mx-auto flex max-w-sm flex-col items-center justify-center py-20 text-center">
+  @if (error()) {
+    <span class="material-symbols-outlined mb-3 text-[40px] text-danger">error</span>
+    <p class="text-body-regular text-neutral-900">{{ error() }}</p>
+    <a routerLink="/login" class="mt-4 text-body-medium text-brand hover:underline">
+      Quay lại trang đăng nhập
+    </a>
+  } @else {
+    <div class="h-8 w-8 animate-spin rounded-full border-4 border-neutral-100 border-t-brand"></div>
+    <p class="mt-4 text-body-regular text-neutral-600">Đang xác thực đăng nhập...</p>
+  }
+</div>

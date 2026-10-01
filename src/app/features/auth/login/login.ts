@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
@@ -17,6 +18,11 @@ export class Login {
 
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+
+  // Plain full-page navigation, not XHR — the backend redirects to Google
+  // /Facebook's own login page, which an XHR request can't follow.
+  readonly googleLoginUrl = `${environment.apiUrl}/auth/google`;
+  readonly facebookLoginUrl = `${environment.apiUrl}/auth/facebook`;
 
   async onSubmit(): Promise<void> {
     this.loading.set(true);

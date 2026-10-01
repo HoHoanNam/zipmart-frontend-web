@@ -1,6 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import type { Product } from '../../../core/models/product.model';
 import { ToastService } from '../../toast/toast.service';
 import { WishlistService } from '../../../features/wishlist/wishlist.service';
@@ -10,7 +11,7 @@ import { StarRating } from '../star-rating/star-rating';
 
 @Component({
   selector: 'app-product-card',
-  imports: [RouterLink, VndCurrencyPipe, DecimalPipe, StarRating],
+  imports: [RouterLink, VndCurrencyPipe, DecimalPipe, StarRating, TranslatePipe],
   templateUrl: './product-card.html',
 })
 export class ProductCard {

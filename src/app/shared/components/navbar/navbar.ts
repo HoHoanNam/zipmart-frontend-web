@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
 import type { Category } from '../../../core/models/category.model';
 import { CartService } from '../../../features/cart/cart.service';
@@ -10,13 +11,14 @@ import type { ProductSuggestion } from '../../../features/products/products.serv
 import { ProductsService } from '../../../features/products/products.service';
 import { WishlistService } from '../../../features/wishlist/wishlist.service';
 import { CompareService } from '../../compare/compare.service';
+import { LanguageSwitcher } from '../language-switcher/language-switcher';
 
 const SUGGEST_DEBOUNCE_MS = 250;
 const MIN_SUGGEST_LENGTH = 2;
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, TranslatePipe, LanguageSwitcher],
   templateUrl: './navbar.html',
 })
 export class Navbar {
@@ -47,7 +49,7 @@ export class Navbar {
 
   onSearch(): void {
     this.showSuggestions.set(false);
-    void this.router.navigate(['/products'], { queryParams: { q: this.search || null } });
+    void this.router.navigate(['/search'], { queryParams: { q: this.search || null } });
   }
 
   onSearchInput(): void {
